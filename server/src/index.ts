@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import indexRoutes from './routes/indexRoutes';
 import userRoutes from './routes/userRoutes';
+import homeRoutes from "./routes/homeRoutes";
 class Server {
     public app: Application;
     constructor(){
@@ -20,7 +21,8 @@ class Server {
     //rutas de la pagina
     routes(): void{
         this.app.use('/', indexRoutes)
-        this.app.use('/User', userRoutes)
+        this.app.use('/home', homeRoutes)
+        this.app.use('/user', userRoutes)
 
     }
     start():void{

@@ -1,9 +1,7 @@
 import {Request, Response} from 'express';
-import {Pool} from 'pg'
 class IndexController {
     public index (req: Request, res: Response) {
-        const reqs = req.body
-        res.send(reqs)
+        res.json({message:"start page"})
     }
 }
 const indexController = new IndexController();

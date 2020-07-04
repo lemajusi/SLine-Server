@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class IndexController {
     index(req, res) {
-        const reqs = req.body;
-        res.send(reqs);
+        res.json({ message: "start page" });
     }
 }
 const indexController = new IndexController();
