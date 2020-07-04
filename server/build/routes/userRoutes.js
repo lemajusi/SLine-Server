@@ -14,7 +14,7 @@ class UserRoutes {
         //rutas
         //listar todos
         this.router.get('/', usercontroller_1.default.Lista);
-        //listarpor id
+        //listar por nombre
         this.router.get('/:dato', usercontroller_1.default.Usuario);
         //listar
         this.router.post('/', usercontroller_1.default.CrearUsuario);
