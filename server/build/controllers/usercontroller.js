@@ -23,11 +23,14 @@ class UserController {
     }
     Usuario(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const a = req.params.dato;
-            console.log(a);
-            const result = yield database_1.default.query("select * from usuario where username = '" + a + "'");
+            const result = yield database_1.default.query("select * from usuario where username = '" + req.params.dato + "'");
             const resultado = result.rows;
-            res.json(resultado);
+            if (resultado[0] == null) {
+                res.json("no existe ese usuario");
+            }
+            else {
+                res.json(resultado);
+            }
         });
     }
     CrearUsuario(req, res) {
@@ -69,22 +72,59 @@ class UserController {
                     if (error.column == undefined) {
                         res.json({ massage: "mal ingreso de columna" });
                     }
+                    else {
+                        res.json("algun tipo de error desconocido");
+                    }
                 }
             }
         });
     }
     ActualizarUsuario(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const a = req.params.dato;
-            try {
-                const result = yield database_1.default.query("update usuarios set ? where usuario username = ?", [req.body, a]);
-                const resultado = result.rows;
-                res.json(resultado);
+            const result = yield database_1.default.query("select * from usuario where username = '" + req.params.dato + "'");
+            const a = result.rows;
+            console.log(result.rows);
+            if (req.body.username == undefined) {
+                res.json("username indefinido");
             }
-            catch (error) {
-                console.log("Actuaulizar" + error);
-                if (error.column == undefined) {
-                    res.json("columna indefinida");
+            if (req.body.email == undefined) {
+                res.json("email indefinido");
+            }
+            if (req.body.password == undefined) {
+                res.json("password indefinido");
+            }
+            if (req.body.fechanac == undefined) {
+                res.json("fecha Nacimiento indefinido");
+            }
+            if (req.body.sexo == undefined) {
+                res.json("sexo indefinido");
+            }
+            if (a[0] == null) {
+                res.json("no existe ese usuario");
+            }
+            else {
+                try {
+                    const result = yield database_1.default.query("update usuario set username='" + req.body.username +
+                        "', email='" + req.body.email +
+                        "', password='" + req.body.password +
+                        "', sexo='" + req.body.sexo +
+                        "', fechanac='" + req.body.fechanac + "' where username = '" + req.params.dato + "'");
+                    res.json({ massage: "Usuario " + req.body.username + " a sido actualizado!" });
+                }
+                catch (error) {
+                    console.log("Actuaulizar" + error);
+                    if (error.column == undefined) {
+                        res.json("columna indefinida");
+                    }
+                    if (error.constraint == "usuario_username_key") {
+                        res.json({ message: "Este nombre de usuario esta siendo utilizado" });
+                    }
+                    if (error.constraint == "usuario_email_key") {
+                        res.json({ message: "esta direccion de email esta siendo utilizada" });
+                    }
+                    else {
+                        res.json("algun tipo de error desconocido");
+                    }
                 }
             }
         });
