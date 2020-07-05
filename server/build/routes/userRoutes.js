@@ -20,6 +20,8 @@ class UserRoutes {
         this.router.post('/', usercontroller_1.default.CrearUsuario);
         //borrar
         this.router.delete('/:dato', usercontroller_1.default.BorrarUsuario);
+        //actualizar datos por nombre
+        this.router.put('/:dato', usercontroller_1.default.ActualizarUsuario);
     }
 }
 const userRoutes = new UserRoutes();

@@ -1,10 +1,11 @@
 CREATE TABLE usuario( 
-        id serial NOT NULL,
         username VARCHAR (50) NOT NULL unique,
         email VARCHAR (70) NOT NULL unique,
         password VARCHAR (50) NOT NULL,
         sexo VARCHAR (10) NOT NULL,
-        fechaNac DATE default current_date,
+        fechaActual timestamp with default current_date [],
+        fechaNac DATE NOT NULL,
+        id serial NOT NULL,
         PRIMARY KEY (id)
 );
 

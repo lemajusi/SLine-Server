@@ -9,12 +9,14 @@ class UserRoutes {
         //rutas
         //listar todos
         this.router.get('/', userController.Lista);
-        //listarpor id
+        //listar por nombre
         this.router.get('/:dato',userController.Usuario)
         //listar
         this.router.post('/', userController.CrearUsuario);
         //borrar
         this.router.delete('/:dato', userController.BorrarUsuario)
+        //actualizar datos por nombre
+        this.router.put('/:dato', userController.ActualizarUsuario)
     }
 }
 const userRoutes = new UserRoutes()
