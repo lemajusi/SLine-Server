@@ -3,13 +3,11 @@ CREATE TABLE usuario(
         email VARCHAR (70) NOT NULL unique,
         password VARCHAR (50) NOT NULL,
         sexo VARCHAR (10) NOT NULL,
-        fechaActual timestamp with default current_date [],
+        fechaActual timestamp default current_date,
         fechaNac DATE NOT NULL,
         id serial NOT NULL,
         PRIMARY KEY (id)
 );
-
-alter table usuario 
 CREATE TABLE registrado(
     idUsuario INT NOT NULL,
     PRIMARY KEY (idUsuario),
