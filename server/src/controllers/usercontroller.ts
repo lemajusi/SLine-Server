@@ -6,7 +6,11 @@ class UserController {
     public async getUsers(req: Request, res: Response) {
         try {
             const response = await pool.query('SELECT * FROM usuario');
-            res.json(response.rows);
+            res.send({
+                status: 200,
+                statusText: 'Request Successful',
+                data: response.rows
+            })
         } catch (error) {
             res.json({message: "Not users found."});
             console.log(error);

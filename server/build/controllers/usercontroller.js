@@ -18,7 +18,11 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield database_1.default.query('SELECT * FROM usuario');
-                res.json(response.rows);
+                res.send({
+                    status: 200,
+                    statusText: 'Request Successful',
+                    data: response.rows
+                });
             }
             catch (error) {
                 res.json({ message: "Not users found." });
