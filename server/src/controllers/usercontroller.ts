@@ -1,26 +1,29 @@
 import {Request,Response} from 'express';
 import pool from '../database'
+
 class UserController {
-    public async Lista (req: Request, res: Response) {
+
+    public async getUsers(req: Request, res: Response) {
         try {
-            const result = await pool.query('SELECT * FROM usuario')
-            const resultado = result.rows
-            res.json(resultado)
+            const response = await pool.query('SELECT * FROM usuario');
+            res.json(response.rows);
         } catch (error) {
-            res.json({message: "no se pueden obtener usuarios"})
-            console.log(error)
+            res.json({message: "Not users found."});
+            console.log(error);
         }
         
     }
-    public async Usuario (req: Request, res: Response) {
-        const result = await pool.query("select * from usuario where username = '" + req.params.dato +"'")
-        const resultado = result.rows
-        if(resultado[0] == null){
+
+    public async getUserById(req: Request, res: Response) {
+        const response = await pool.query("select * from usuario where id = '" + req.params.dato +"'")
+        
+        if(response.rows == null){
             res.json("no existe ese usuario")
         }else{
-            res.json(resultado)            
+            res.json(response.rows)            
         }
     }
+
     public async CrearUsuario(req:Request, res: Response){
         const nombre = req.body.username
         if(req.body.username == undefined){

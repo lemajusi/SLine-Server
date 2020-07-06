@@ -27,7 +27,7 @@ class Server {
     }
     start():void{
         this.app.listen(this.app.get('port'), () => {
-            console.log('SERVER onport', this.app.get('port'))
+            console.log('SERVER on port', this.app.get('port'))
         });
     }
 }

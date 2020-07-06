@@ -14,28 +14,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
 class UserController {
-    Lista(req, res) {
+    getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const result = yield database_1.default.query('SELECT * FROM usuario');
-                const resultado = result.rows;
-                res.json(resultado);
+                const response = yield database_1.default.query('SELECT * FROM usuario');
+                res.json(response.rows);
             }
             catch (error) {
-                res.json({ message: "no se pueden obtener usuarios" });
+                res.json({ message: "Not users found." });
                 console.log(error);
             }
         });
     }
-    Usuario(req, res) {
+    getUserById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield database_1.default.query("select * from usuario where username = '" + req.params.dato + "'");
-            const resultado = result.rows;
-            if (resultado[0] == null) {
+            const response = yield database_1.default.query("select * from usuario where id = '" + req.params.dato + "'");
+            if (response.rows == null) {
                 res.json("no existe ese usuario");
             }
             else {
-                res.json(resultado);
+                res.json(response.rows);
             }
         });
     }

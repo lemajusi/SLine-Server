@@ -12,10 +12,10 @@ class UserRoutes {
     }
     config() {
         //rutas
-        //listar todos
-        this.router.get('/', usercontroller_1.default.Lista);
-        //listar por nombre
-        this.router.get('/:dato', usercontroller_1.default.Usuario);
+        //list users
+        this.router.get('/', usercontroller_1.default.getUsers);
+        //search by id
+        this.router.get('/:dato', usercontroller_1.default.getUserById);
         //listar
         this.router.post('/', usercontroller_1.default.CrearUsuario);
         //borrar

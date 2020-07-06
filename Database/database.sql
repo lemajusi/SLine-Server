@@ -8,6 +8,7 @@ CREATE TABLE usuario(
         id serial NOT NULL,
         PRIMARY KEY (id)
 );
+
 CREATE TABLE registrado(
     idUsuario INT NOT NULL,
     PRIMARY KEY (idUsuario),
