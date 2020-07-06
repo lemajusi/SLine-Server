@@ -16,9 +16,15 @@ const database_1 = __importDefault(require("../database"));
 class UserController {
     Lista(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield database_1.default.query('SELECT * FROM usuario');
-            const resultado = result.rows;
-            res.json(resultado);
+            try {
+                const result = yield database_1.default.query('SELECT * FROM usuario');
+                const resultado = result.rows;
+                res.json(resultado);
+            }
+            catch (error) {
+                res.json({ message: "no se pueden obtener usuarios" });
+                console.log(error);
+            }
         });
     }
     Usuario(req, res) {
@@ -62,7 +68,6 @@ class UserController {
                     res.json({ massage: "Usuario " + nombre + " a sido registrado!" });
                 }
                 catch (error) {
-                    console.log("crearUsuario" + error);
                     if (error.constraint == "usuario_username_key") {
                         res.json({ message: "Este nombre de usuario esta siendo utilizado" });
                     }
@@ -74,6 +79,7 @@ class UserController {
                     }
                     else {
                         res.json("algun tipo de error desconocido");
+                        console.log(error);
                     }
                 }
             }

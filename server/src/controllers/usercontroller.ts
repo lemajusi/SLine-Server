@@ -2,9 +2,15 @@ import {Request,Response} from 'express';
 import pool from '../database'
 class UserController {
     public async Lista (req: Request, res: Response) {
-        const result = await pool.query('SELECT * FROM usuario')
-        const resultado = result.rows
-        res.json(resultado)
+        try {
+            const result = await pool.query('SELECT * FROM usuario')
+            const resultado = result.rows
+            res.json(resultado)
+        } catch (error) {
+            res.json({message: "no se pueden obtener usuarios"})
+            console.log(error)
+        }
+        
     }
     public async Usuario (req: Request, res: Response) {
         const result = await pool.query("select * from usuario where username = '" + req.params.dato +"'")
@@ -42,7 +48,6 @@ class UserController {
                 req.body.sexo+"')")
                 res.json({massage: "Usuario "+nombre+" a sido registrado!"})
             } catch (error) {
-                console.log("crearUsuario"+error)
                 if (error.constraint == "usuario_username_key"){
                     res.json({message:"Este nombre de usuario esta siendo utilizado"})
                 }
@@ -54,6 +59,7 @@ class UserController {
                 }
                 else{
                     res.json("algun tipo de error desconocido")
+                    console.log(error)
                 }
             }
         }
