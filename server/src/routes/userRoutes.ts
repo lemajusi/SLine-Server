@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import userController from '../controllers/usercontroller';
+import userController from './../controllers/userController';
 
 class UserRoutes {
 
@@ -10,15 +10,15 @@ class UserRoutes {
     }
 
     config(): void {
-    //rutas
+
         //list users
         this.router.get('/', userController.getUsers);
      
         //search by id
         this.router.get('/:dato',userController.getUserById)
      
-        //listar
-        this.router.post('/', userController.CrearUsuario);
+        //SignUp
+        this.router.post('/signup', userController.CrearUsuario);
      
         //borrar
         this.router.delete('/:dato', userController.BorrarUsuario)

@@ -1,5 +1,7 @@
-import {Request,Response} from 'express';
-import pool from '../database'
+import { Request, Response } from 'express';
+import pool from './../database';
+
+const bcrypt = require('bcrypt');
 
 class UserController {
 
@@ -8,7 +10,7 @@ class UserController {
             const response = await pool.query('SELECT * FROM usuario');
             res.send({
                 status: 200,
-                statusText: 'Request Successful',
+                message: 'Request Successfull',
                 data: response.rows
             })
         } catch (error) {
@@ -28,7 +30,29 @@ class UserController {
         }
     }
 
-    public async CrearUsuario(req:Request, res: Response){
+    public async createUser(req: Request, res: Response){
+        var hash = bcrypt.hashSync(req.body.password);
+        try {
+            await pool.query
+                ("insert into usuario (username, email, password, fechanac, sexo) values ('"+
+                    req.body.username+"','"+
+                    req.body.email+"','"+
+                    req.body.password+"','"+
+                    req.body.sexo+"','"+
+                    req.body.fechaNac+"');"
+                );
+            
+            res.send({
+                status: 200,
+                message: 'Request Successfull',
+                data: res.json
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    } 
+
+    public async CrearUsuario(req: Request, res: Response){
         const nombre = req.body.username
         if(req.body.username == undefined){
             res.json("nombre indefinifo")
@@ -72,6 +96,7 @@ class UserController {
         }
         
     }
+
     public async ActualizarUsuario(req:Request, res:Response){
         const result = await pool.query("select * from usuario where username = '" + req.params.dato +"'")
         const a = result.rows
@@ -124,5 +149,6 @@ class UserController {
         }
     }
 }
+
 const userController = new UserController()
 export default userController
