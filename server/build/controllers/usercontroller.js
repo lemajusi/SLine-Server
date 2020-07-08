@@ -25,19 +25,40 @@ class UserController {
                 });
             }
             catch (error) {
-                res.json({ message: "Not users found." });
                 console.log(error);
+                res.send({
+                    status: 403,
+                    statusText: "error",
+                    message: "Can't Get"
+                });
             }
         });
     }
     getUserById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield database_1.default.query("select * from usuario where id = '" + req.params.dato + "'");
-            if (response.rows == null) {
-                res.json("no existe ese usuario");
+            try {
+                const response = yield database_1.default.query("select * from usuario where id = '" + req.params.dato + "'");
+                if (response.rows == null) {
+                    res.send({
+                        status: 403,
+                        statusText: "error",
+                        message: "This user doesn't exist"
+                    });
+                }
+                else {
+                    res.json({
+                        status: 200,
+                        message: 'Request Successfull',
+                        data: response.rows
+                    });
+                }
             }
-            else {
-                res.json(response.rows);
+            catch (error) {
+                console.log(error);
+                res.send({
+                    status: 404,
+                    statusText: "error"
+                });
             }
         });
     }
@@ -53,7 +74,6 @@ class UserController {
                 res.send({
                     status: 200,
                     message: 'User created successfully',
-                    data: response.rows
                 });
             }
             catch (error) {
@@ -66,35 +86,24 @@ class UserController {
                     err = "Email duplicado.";
                 }
                 res.send({
-                    status: 500,
-                    statusText: 'Internal server error',
+                    status: 403,
+                    statusText: 'Error',
                     message: err
                 });
             }
         });
     }
-    ActualizarUsuario(req, res) {
+    updateUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield database_1.default.query("select * from usuario where username = '" + req.params.dato + "'");
             const a = result.rows;
             console.log(result.rows);
-            if (req.body.username == undefined) {
-                res.json("username indefinido");
-            }
-            if (req.body.email == undefined) {
-                res.json("email indefinido");
-            }
-            if (req.body.password == undefined) {
-                res.json("password indefinido");
-            }
-            if (req.body.fechanac == undefined) {
-                res.json("fecha Nacimiento indefinido");
-            }
-            if (req.body.sexo == undefined) {
-                res.json("sexo indefinido");
-            }
             if (a[0] == null) {
-                res.json("no existe ese usuario");
+                res.send({
+                    status: 403,
+                    statusText: "Error",
+                    message: "This user doesn't exist"
+                });
             }
             else {
                 try {
@@ -103,36 +112,55 @@ class UserController {
                         "', password='" + req.body.password +
                         "', sexo='" + req.body.sexo +
                         "', fechanac='" + req.body.fechanac + "' where username = '" + req.params.dato + "'");
-                    res.json({ massage: "Usuario " + req.body.username + " a sido actualizado!" });
+                    res.send({
+                        status: 200,
+                        statusText: "Updated Succesfully"
+                    });
                 }
                 catch (error) {
-                    console.log("Actuaulizar" + error);
-                    if (error.column == undefined) {
-                        res.json("columna indefinida");
-                    }
+                    console.log(error);
+                    let err = undefined;
                     if (error.constraint == "usuario_username_key") {
-                        res.json({ message: "Este nombre de usuario esta siendo utilizado" });
+                        err = "Usuario duplicado.";
                     }
                     if (error.constraint == "usuario_email_key") {
-                        res.json({ message: "esta direccion de email esta siendo utilizada" });
+                        err = "Email duplicado.";
                     }
-                    else {
-                        res.json("algun tipo de error desconocido");
-                    }
+                    res.send({
+                        status: 403,
+                        statusText: "Error de Datos",
+                        message: err
+                    });
                 }
             }
         });
     }
-    BorrarUsuario(req, res) {
+    deleteUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const a = req.params.dato;
-            try {
-                const result = yield database_1.default.query("delete from usuario where username = '" + a + "'");
-                res.json({ message: "Eliminado" });
+            const result = yield database_1.default.query("select * from usuario where username = '" + req.params.dato + "'");
+            const a = result.rows;
+            console.log(result.rows);
+            if (a[0] == null) {
+                res.sendStatus(403).send({
+                    statusText: "No existe este Usuario"
+                });
             }
-            catch (error) {
-                console.log(error);
-                res.json({ message: "Peticion no aceptada" });
+            else {
+                try {
+                    const result = yield database_1.default.query("delete from usuario where username = '" + req.params.dato + "'");
+                    res.send({
+                        status: 200,
+                        statusText: "Usuario eliminado"
+                    });
+                }
+                catch (error) {
+                    console.log(error);
+                    let err = "Error al eliminar Usuario";
+                    res.send({
+                        status: 403,
+                        statusText: err
+                    });
+                }
             }
         });
     }

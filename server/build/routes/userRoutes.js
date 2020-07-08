@@ -18,9 +18,9 @@ class UserRoutes {
         //SignUp
         this.router.post('/', usercontroller_1.default.createUser);
         //borrar
-        this.router.delete('/:dato', usercontroller_1.default.BorrarUsuario);
+        this.router.delete('/:dato', usercontroller_1.default.deleteUser);
         //actualizar datos por nombre
-        this.router.put('/:dato', usercontroller_1.default.ActualizarUsuario);
+        this.router.put('/:dato', usercontroller_1.default.updateUser);
     }
 }
 const userRoutes = new UserRoutes();
