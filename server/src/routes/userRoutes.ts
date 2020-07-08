@@ -18,7 +18,7 @@ class UserRoutes {
         this.router.get('/:dato',userController.getUserById)
      
         //SignUp
-        this.router.post('/signup', userController.CrearUsuario);
+        this.router.post('/', userController.createUser);
      
         //borrar
         this.router.delete('/:dato', userController.BorrarUsuario)

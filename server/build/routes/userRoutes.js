@@ -16,7 +16,7 @@ class UserRoutes {
         //search by id
         this.router.get('/:dato', userController_1.default.getUserById);
         //SignUp
-        this.router.post('/signup', userController_1.default.CrearUsuario);
+        this.router.post('/', userController_1.default.createUser);
         //borrar
         this.router.delete('/:dato', userController_1.default.BorrarUsuario);
         //actualizar datos por nombre

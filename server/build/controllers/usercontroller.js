@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("./../database"));
-const bcrypt = require('bcrypt');
 class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -44,18 +43,17 @@ class UserController {
     }
     createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            var hash = bcrypt.hashSync(req.body.password);
             try {
-                yield database_1.default.query("insert into usuario (username, email, password, fechanac, sexo) values ('" +
+                const response = yield database_1.default.query("insert into usuario (username, email, password, fechanac, sexo) values ('" +
                     req.body.username + "','" +
                     req.body.email + "','" +
                     req.body.password + "','" +
-                    req.body.sexo + "','" +
-                    req.body.fechaNac + "');");
+                    req.body.fechanac + "','" +
+                    req.body.sexo + "')");
                 res.send({
                     status: 200,
-                    message: 'Request Successfull',
-                    data: res.json
+                    message: 'User created successfully',
+                    data: response.rows
                 });
             }
             catch (error) {

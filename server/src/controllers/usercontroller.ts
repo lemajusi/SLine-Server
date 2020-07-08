@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import pool from './../database';
 
-const bcrypt = require('bcrypt');
-
 class UserController {
 
     public async getUsers(req: Request, res: Response) {
@@ -31,22 +29,20 @@ class UserController {
     }
 
     public async createUser(req: Request, res: Response){
-        var hash = bcrypt.hashSync(req.body.password);
         try {
-            await pool.query
-                ("insert into usuario (username, email, password, fechanac, sexo) values ('"+
-                    req.body.username+"','"+
-                    req.body.email+"','"+
-                    req.body.password+"','"+
-                    req.body.sexo+"','"+
-                    req.body.fechaNac+"');"
-                );
-            
+            const response = await pool.query("insert into usuario (username, email, password, fechanac, sexo) values ('"+
+            req.body.username+"','"+
+            req.body.email+"','"+
+            req.body.password+"','"+
+            req.body.fechanac+"','"+
+            req.body.sexo+"')");
+
             res.send({
                 status: 200,
-                message: 'Request Successfull',
-                data: res.json
+                message: 'User created successfully',
+                data: response.rows
             });
+        
         } catch (error) {
             console.log(error);
         }
