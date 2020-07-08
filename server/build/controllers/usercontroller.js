@@ -58,52 +58,18 @@ class UserController {
             }
             catch (error) {
                 console.log(error);
-            }
-        });
-    }
-    CrearUsuario(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const nombre = req.body.username;
-            if (req.body.username == undefined) {
-                res.json("nombre indefinifo");
-            }
-            if (req.body.email == undefined) {
-                res.json("email indefinido");
-            }
-            if (req.body.password == undefined) {
-                res.json("password indefinido");
-            }
-            if (req.body.fechanac == undefined) {
-                res.json("fecha Nacimiento indefinido");
-            }
-            if (req.body.sexo == undefined) {
-                res.json("sexo indefinido");
-            }
-            else {
-                try {
-                    const result = yield database_1.default.query("insert into usuario (username, email, password, fechanac, sexo) values ('" +
-                        req.body.username + "','" +
-                        req.body.email + "','" +
-                        req.body.password + "','" +
-                        req.body.fechanac + "','" +
-                        req.body.sexo + "')");
-                    res.json({ massage: "Usuario " + nombre + " a sido registrado!" });
+                let err = undefined;
+                if (error.constraint == "usuario_username_key") {
+                    err = "Usuario duplicado.";
                 }
-                catch (error) {
-                    if (error.constraint == "usuario_username_key") {
-                        res.json({ message: "Este nombre de usuario esta siendo utilizado" });
-                    }
-                    if (error.constraint == "usuario_email_key") {
-                        res.json({ message: "esta direccion de email esta siendo utilizada" });
-                    }
-                    if (error.column == undefined) {
-                        res.json({ massage: "mal ingreso de columna" });
-                    }
-                    else {
-                        res.json("algun tipo de error desconocido");
-                        console.log(error);
-                    }
+                if (error.constraint == "usuario_email_key") {
+                    err = "Email duplicado.";
                 }
+                res.send({
+                    status: 500,
+                    statusText: 'Internal server error',
+                    message: err
+                });
             }
         });
     }
