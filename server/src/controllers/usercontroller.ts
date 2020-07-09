@@ -5,7 +5,7 @@ class UserController {
 
     public async getUsers(req: Request, res: Response) {
         try {
-            const response = await pool.query('SELECT * FROM usuario');
+            const response = await pool.query('SELECT id ,username FROM usuario');
             res.send({
                 status: 200,
                 message: 'Request Successfull',

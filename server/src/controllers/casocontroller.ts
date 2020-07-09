@@ -11,7 +11,12 @@ class CasoController{
                 data: response.rows
             });
         } catch (error) {
-            res.send("no existe");
+            console.log(error);
+            res.send({
+                status: 403,
+                statusText: "error",
+                message: "Can't Get"
+            });
         }
     }
     public async getCasoById(req:Request, res:Response){
@@ -23,9 +28,14 @@ class CasoController{
                 data: response.rows
             })
         } catch (error) {
-            res.send("no existe")
+            console.log(error)
+            res.send({
+                status: 403,
+                statusText: "Error",
+
+            })
         }
     }
 }
-const casoControler = new CasoController()
+const casoController = new CasoController()
 export default casoController

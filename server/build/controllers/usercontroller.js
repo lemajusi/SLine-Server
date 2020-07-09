@@ -17,7 +17,7 @@ class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield database_1.default.query('SELECT * FROM usuario');
+                const response = yield database_1.default.query('SELECT id ,username FROM usuario');
                 res.send({
                     status: 200,
                     message: 'Request Successfull',
