@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import userController from './../controllers/userController';
+import userController from './../controllers/usercontroller';
 
 class UserRoutes {
 
@@ -21,10 +21,10 @@ class UserRoutes {
         this.router.post('/', userController.createUser);
      
         //borrar
-        this.router.delete('/:dato', userController.BorrarUsuario)
+        this.router.delete('/:dato', userController.deleteUser)
      
         //actualizar datos por nombre
-        this.router.put('/:dato', userController.ActualizarUsuario)
+        this.router.put('/:dato', userController.updateUser)
     }
 }
 

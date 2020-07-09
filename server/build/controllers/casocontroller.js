@@ -18,7 +18,26 @@ class CasoController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield database_1.default.query("Select * from casos");
-                res.send("hola");
+                res.send({
+                    status: 200,
+                    message: 'Request Successfull',
+                    data: response.rows
+                });
+            }
+            catch (error) {
+                res.send("no existe");
+            }
+        });
+    }
+    getCasoById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield database_1.default.query("select * from casos where id = '" + req.body.idC + "'");
+                res.send({
+                    status: 200,
+                    message: 'Request Successfull',
+                    data: response.rows
+                });
             }
             catch (error) {
                 res.send("no existe");
