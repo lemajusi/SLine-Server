@@ -53,6 +53,11 @@ class CasoController {
             }
         });
     }
+    addCaso(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield database_1.default.query("select * from casos");
+        });
+    }
 }
 const casoController = new CasoController();
 exports.default = casoController;

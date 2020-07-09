@@ -36,6 +36,10 @@ class CasoController{
             })
         }
     }
+    public async addCaso(req:Request, res:Response){
+        const response = await pool.query("select * from casos")
+        
+    }
 }
 const casoController = new CasoController()
 export default casoController

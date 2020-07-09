@@ -11,11 +11,11 @@ CREATE TABLE users(
 );
 
 CREATE TABLE casos(
-    idCaso SERIAL NOT NULL,
     coordenadas json NOT NULL,
     titulo varchar(60) not null,
-    descripcion TEXT NOT NULl,
+    descripcion TEXT,
     idUsuario INT NOT NULL,
+    idCaso SERIAL NOT NULL,
     PRIMARY KEY (idCaso),
-    FOREIGN KEY (idUsuario) REFERENCES usuario (id)
+    FOREIGN KEY (idUsuario) REFERENCES users (id)
 );

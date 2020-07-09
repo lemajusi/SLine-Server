@@ -62,7 +62,7 @@ class UserController {
             }
         });
     }
-    createUser(req, res) {
+    addUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield database_1.default.query("insert into users (username, email, password, sexo, fechanac) values ('" +

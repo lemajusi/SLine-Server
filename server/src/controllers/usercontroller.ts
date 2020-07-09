@@ -48,7 +48,7 @@ class UserController {
         }
     }
 
-    public async createUser(req: Request, res: Response){
+    public async addUser(req: Request, res: Response){
         try {
             const response = await pool.query("insert into users (username, email, password, sexo, fechanac) values ('"+
             req.body.username+"','"+
