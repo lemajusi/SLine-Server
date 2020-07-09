@@ -5,7 +5,7 @@ class UserController {
 
     public async getUsers(req: Request, res: Response) {
         try {
-            const response = await pool.query('SELECT * FROM usuario');
+            const response = await pool.query('SELECT * FROM users');
             res.send({
                 status: 200,
                 message: 'Request Successfull',
@@ -30,12 +30,12 @@ class UserController {
 
     public async createUser(req: Request, res: Response){
         try {
-            const response = await pool.query("insert into usuario (username, email, password, fechanac, sexo) values ('"+
+            const response = await pool.query("insert into users (username, email, password, sexo, fechanac) values ('"+
             req.body.username+"','"+
             req.body.email+"','"+
             req.body.password+"','"+
-            req.body.fechanac+"','"+
-            req.body.sexo+"')");
+            req.body.sexo+"','"+
+            req.body.fechanac+"')");
 
             res.send({
                 status: 200,
@@ -45,6 +45,8 @@ class UserController {
         
         } catch (error) {
             console.log(error);
+
+            console.log(req.body)
 
             let err = undefined;
             
@@ -58,7 +60,7 @@ class UserController {
             res.send({
                 status: 500,
                 statusText: 'Internal server error',
-                message: err
+                message: err || error
             })
         }
     } 

@@ -17,7 +17,7 @@ class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield database_1.default.query('SELECT * FROM usuario');
+                const response = yield database_1.default.query('SELECT * FROM users');
                 res.send({
                     status: 200,
                     message: 'Request Successfull',
@@ -44,12 +44,12 @@ class UserController {
     createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield database_1.default.query("insert into usuario (username, email, password, fechanac, sexo) values ('" +
+                const response = yield database_1.default.query("insert into users (username, email, password, sexo, fechanac) values ('" +
                     req.body.username + "','" +
                     req.body.email + "','" +
                     req.body.password + "','" +
-                    req.body.fechanac + "','" +
-                    req.body.sexo + "')");
+                    req.body.sexo + "','" +
+                    req.body.fechanac + "')");
                 res.send({
                     status: 200,
                     message: 'User created successfully',
@@ -58,6 +58,7 @@ class UserController {
             }
             catch (error) {
                 console.log(error);
+                console.log(req.body);
                 let err = undefined;
                 if (error.constraint == "usuario_username_key") {
                     err = "Usuario duplicado.";
@@ -68,7 +69,7 @@ class UserController {
                 res.send({
                     status: 500,
                     statusText: 'Internal server error',
-                    message: err
+                    message: err || error
                 });
             }
         });
