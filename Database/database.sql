@@ -6,6 +6,7 @@ CREATE TABLE users(
         fechaRegistro timestamp DEFAULT current_date,
         fechaNac DATE NOT NULL,
         rol VARCHAR(15) DEFAULT 'simple',
+        token VARCHAR(100) DEFAULT null,
         id serial NOT NULL,
         PRIMARY KEY (id)
 );
