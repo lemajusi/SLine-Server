@@ -37,9 +37,34 @@ class CasoController{
         }
     }
     public async addCaso(req:Request, res:Response){
-        const response = await pool.query("select * from casos")
+        try {
+            const response = await pool.query("insert into users (username, email, password, sexo, fechanac) values ('"+
+            req.body.username+"','"+
+            req.body.email+"','"+
+            req.body.password+"','"+
+            req.body.sexo+"','"+
+            req.body.fechanac+"')");
+
+            res.send({
+                status: 200,
+                message: 'User created successfully',
+            })
         
-    }
+        } catch (error) {
+            console.log(error);
+
+            console.log(req.body)
+
+            let err = undefined;
+
+            res.send({
+                status: 403,
+                statusText: 'Error',
+                message: err
+            })
+        }
+    } 
 }
+
 const casoController = new CasoController()
 export default casoController
