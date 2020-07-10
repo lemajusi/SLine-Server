@@ -7,7 +7,15 @@ class CasoRoutes{
     }
     public config():void{
         this.router.get('/', casoController.getCasos)
-        this.router.get('/', casoController.getCasoById)
+        
+        //casos por id 
+        this.router.get('/id/:dato', casoController.getCasoById)
+
+        //casos de usuario Perfil
+        this.router.get('/user/:dato', casoController.getCasoByuserId)
+
+        //update caso
+        this.router.post('/', casoController.addCaso)
     }
 }
 const casoRoutes = new CasoRoutes()

@@ -18,8 +18,12 @@ class UserRoutes {
         this.router.get('/:dato',userController.getUserById)
      
         //SignUp
+        //cambiar a user/register
         this.router.post('/', userController.addUser);
-     
+        
+        //Login logout
+        this.router.post('/login')
+        
         //borrar
         this.router.delete('/:dato', userController.deleteUser)
      

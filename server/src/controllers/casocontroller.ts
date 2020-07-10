@@ -21,7 +21,7 @@ class CasoController{
     }
     public async getCasoById(req:Request, res:Response){
         try {
-            const response = await pool.query("select * from casos where id = '"+req.body.idC+"'")
+            const response = await pool.query("select * from casos where idcaso = '"+req.params.dato+"'")
             res.send({
                 status: 200,
                 message: 'Request Successfull',
@@ -32,18 +32,31 @@ class CasoController{
             res.send({
                 status: 403,
                 statusText: "Error",
-
+            })
+        }
+    }
+    public async getCasoByuserId(req:Request, res:Response){
+        try {
+            const response = await pool.query("select * from casos where idusuario = '"+req.params.dato+"'")
+            res.send({
+                status: 200,
+                message: 'Request Successfull',
+                data: response.rows
+            })
+        } catch (error) {
+            console.log(error)
+            res.send({
+                status: 403,
+                statusText: "Error",
             })
         }
     }
     public async addCaso(req:Request, res:Response){
         try {
-            const response = await pool.query("insert into users (username, email, password, sexo, fechanac) values ('"+
-            req.body.username+"','"+
-            req.body.email+"','"+
-            req.body.password+"','"+
-            req.body.sexo+"','"+
-            req.body.fechanac+"')");
+            const response = await pool.query("insert into casos(titulo, descripcion, idusuario) values ('"+
+            req.body.titulo+"','"+
+            req.body.descripcion+"','"+
+            req.body.idusaurio+"')");
 
             res.send({
                 status: 200,

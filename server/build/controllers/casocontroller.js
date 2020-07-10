@@ -37,7 +37,26 @@ class CasoController {
     getCasoById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield database_1.default.query("select * from casos where id = '" + req.body.idC + "'");
+                const response = yield database_1.default.query("select * from casos where idcaso = '" + req.params.dato + "'");
+                res.send({
+                    status: 200,
+                    message: 'Request Successfull',
+                    data: response.rows
+                });
+            }
+            catch (error) {
+                console.log(error);
+                res.send({
+                    status: 403,
+                    statusText: "Error",
+                });
+            }
+        });
+    }
+    getCasoByuserId(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield database_1.default.query("select * from casos where idusuario = '" + req.params.dato + "'");
                 res.send({
                     status: 200,
                     message: 'Request Successfull',
@@ -56,12 +75,10 @@ class CasoController {
     addCaso(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield database_1.default.query("insert into users (username, email, password, sexo, fechanac) values ('" +
-                    req.body.username + "','" +
-                    req.body.email + "','" +
-                    req.body.password + "','" +
-                    req.body.sexo + "','" +
-                    req.body.fechanac + "')");
+                const response = yield database_1.default.query("insert into casos(titulo, descripcion, idusuario) values ('" +
+                    req.body.titulo + "','" +
+                    req.body.descripcion + "','" +
+                    req.body.idusaurio + "')");
                 res.send({
                     status: 200,
                     message: 'User created successfully',

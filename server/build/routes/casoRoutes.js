@@ -12,7 +12,12 @@ class CasoRoutes {
     }
     config() {
         this.router.get('/', casocontroller_1.default.getCasos);
-        this.router.get('/', casocontroller_1.default.getCasoById);
+        //casos por id 
+        this.router.get('/id/:dato', casocontroller_1.default.getCasoById);
+        //casos de usuario Perfil
+        this.router.get('/user/:dato', casocontroller_1.default.getCasoByuserId);
+        //update caso
+        this.router.post('/', casocontroller_1.default.addCaso);
     }
 }
 const casoRoutes = new CasoRoutes();
