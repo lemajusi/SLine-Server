@@ -12,19 +12,26 @@ class UserController {
                 data: response.rows
             })
         } catch (error) {
-            console.log(error);
+            console.error(error);
             res.send({
                 status: 403,
                 statusText: "error",
                 message: "Can't Get"
             });
         }
-        
+    }
+
+    public async authService(req: Request, res: Response){
+        try {
+            const response = await pool.query("SELECT * FROM users WHERE email='"+ req.body.email +"' ")
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     public async getUserById(req: Request, res: Response) {
         try {
-            const response = await pool.query("select * from usuario where id = '" + req.params.dato +"'")
+            const response = await pool.query("SELECT * FROM users WHERE id = '" + req.params.dato +"'")
             if(response.rows == null){
                 res.send({
                     status: 403,
