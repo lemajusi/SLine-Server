@@ -12,7 +12,7 @@ class UserRoutes {
     config(): void {
 
         //list users
-        this.router.get('/', userController.getUsers);
+        //this.router.get('/', userController.getUsers);
      
         //search by id
         this.router.get('/:dato',userController.getUserById)
@@ -22,7 +22,7 @@ class UserRoutes {
         this.router.post('/', userController.addUser);
         
         //Login
-        this.router.get('/login', userController.authService)
+        this.router.post('/login/', userController.authService)
         
         //borrar
         this.router.delete('/:dato', userController.deleteUser)

@@ -12,14 +12,14 @@ class UserRoutes {
     }
     config() {
         //list users
-        this.router.get('/', usercontroller_1.default.getUsers);
+        //this.router.get('/', userController.getUsers);
         //search by id
         this.router.get('/:dato', usercontroller_1.default.getUserById);
         //SignUp
         //cambiar a user/register
         this.router.post('/', usercontroller_1.default.addUser);
         //Login
-        this.router.get('/login', usercontroller_1.default.authService);
+        this.router.post('/login/', usercontroller_1.default.authService);
         //borrar
         this.router.delete('/:dato', usercontroller_1.default.deleteUser);
         //actualizar datos por nombre

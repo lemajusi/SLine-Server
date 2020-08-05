@@ -24,6 +24,7 @@ class UserController {
     public async authService(req: Request, res: Response){
         try {
             const response = await pool.query("SELECT * FROM users WHERE email='"+ req.body.email +"' AND password='"+ req.body.password +"'")
+            
             res.send({
                 status: 200,
                 statusText: 'OK',
