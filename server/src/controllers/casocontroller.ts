@@ -76,6 +76,9 @@ class CasoController{
                 message: err
             })
         }
+    }
+    public async updateCaso(req:Request, res:Response){
+        const caso =  await pool.query("select * from casos where id ='"+req.body.id) 
     } 
 }
 
