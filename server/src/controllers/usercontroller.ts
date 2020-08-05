@@ -15,7 +15,7 @@ class UserController {
             console.error(error);
             res.send({
                 status: 403,
-                statusText: "error",
+                statusText: "Error",
                 message: "Can't Get"
             });
         }
@@ -23,9 +23,20 @@ class UserController {
 
     public async authService(req: Request, res: Response){
         try {
-            const response = await pool.query("SELECT * FROM users WHERE email='"+ req.body.email +"' ")
+            const response = await pool.query("SELECT * FROM users WHERE email='"+ req.body.email +"' AND password='"+ req.body.password +"'")
+            res.send({
+                status: 200,
+                statusText: 'OK',
+                message: 'Request successfull',
+                data: response.rows
+            })
         } catch (error) {
             console.error(error);
+            res.send({
+                status: 403,
+                statusText: 'Error',
+                message: 'Email y/o password no coindicen.'
+            })
         }
     }
 

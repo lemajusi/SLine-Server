@@ -25,11 +25,32 @@ class UserController {
                 });
             }
             catch (error) {
-                console.log(error);
+                console.error(error);
                 res.send({
                     status: 403,
-                    statusText: "error",
+                    statusText: "Error",
                     message: "Can't Get"
+                });
+            }
+        });
+    }
+    authService(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield database_1.default.query("SELECT * FROM users WHERE email='" + req.body.email + "' AND password='" + req.body.password + "'");
+                res.send({
+                    status: 200,
+                    statusText: 'OK',
+                    message: 'Request successfull',
+                    data: response.rows
+                });
+            }
+            catch (error) {
+                console.error(error);
+                res.send({
+                    status: 403,
+                    statusText: 'Error',
+                    message: 'Email y/o password no coindicen.'
                 });
             }
         });
@@ -37,7 +58,7 @@ class UserController {
     getUserById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield database_1.default.query("select * from usuario where id = '" + req.params.dato + "'");
+                const response = yield database_1.default.query("SELECT * FROM users WHERE id = '" + req.params.dato + "'");
                 if (response.rows == null) {
                     res.send({
                         status: 403,

@@ -19,7 +19,7 @@ class UserRoutes {
         //cambiar a user/register
         this.router.post('/', usercontroller_1.default.addUser);
         //Login logout
-        this.router.post('/login');
+        this.router.get('/login', usercontroller_1.default.authService);
         //borrar
         this.router.delete('/:dato', usercontroller_1.default.deleteUser);
         //actualizar datos por nombre

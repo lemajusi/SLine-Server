@@ -22,7 +22,7 @@ class UserRoutes {
         this.router.post('/', userController.addUser);
         
         //Login logout
-        this.router.post('/login')
+        this.router.get('/login', userController.authService)
         
         //borrar
         this.router.delete('/:dato', userController.deleteUser)
