@@ -18,7 +18,7 @@ class UserRoutes {
         //SignUp
         //cambiar a user/register
         this.router.post('/', usercontroller_1.default.addUser);
-        //Login logout
+        //Login
         this.router.get('/login', usercontroller_1.default.authService);
         //borrar
         this.router.delete('/:dato', usercontroller_1.default.deleteUser);

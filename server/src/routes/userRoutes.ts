@@ -21,7 +21,7 @@ class UserRoutes {
         //cambiar a user/register
         this.router.post('/', userController.addUser);
         
-        //Login logout
+        //Login
         this.router.get('/login', userController.authService)
         
         //borrar
