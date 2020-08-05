@@ -18,7 +18,7 @@ class UserRoutes {
         //Sign Up
         this.router.post('/', usercontroller_1.default.addUser);
         //Login
-        this.router.get('/login', usercontroller_1.default.authService);
+        this.router.post('/login', usercontroller_1.default.authService);
         // //borrar
         // this.router.delete('/:dato', userController.deleteUser)
         // //actualizar datos por nombre
