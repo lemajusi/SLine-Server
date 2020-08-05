@@ -28,7 +28,7 @@ class UserController {
             res.send({
                 status: 200,
                 statusText: 'OK',
-                message: 'Request successfull',
+                message: 'Usuario existente',
                 data: response.rows
             })
         } catch (error) {
