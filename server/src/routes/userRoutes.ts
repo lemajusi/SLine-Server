@@ -11,24 +11,23 @@ class UserRoutes {
 
     config(): void {
 
-        //list users
+        //Get users
         this.router.get('/', userController.getUsers);
      
-        //search by id
-        this.router.get('/:dato',userController.getUserById)
+        // //search by id
+        // this.router.get('/:dato',userController.getUserById)
      
-        //SignUp
-        //cambiar a user/register
+        //Sign Up
         this.router.post('/', userController.addUser);
         
         //Login
         this.router.get('/login', userController.authService)
         
-        //borrar
-        this.router.delete('/:dato', userController.deleteUser)
+        // //borrar
+        // this.router.delete('/:dato', userController.deleteUser)
      
-        //actualizar datos por nombre
-        this.router.put('/:dato', userController.updateUser)
+        // //actualizar datos por nombre
+        // this.router.put('/:dato', userController.updateUser)
     }
 }
 
