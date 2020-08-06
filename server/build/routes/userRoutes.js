@@ -14,15 +14,15 @@ class UserRoutes {
         //Get users
         this.router.get('/', usercontroller_1.default.getUsers);
         // //search by id
-        // this.router.get('/:dato',userController.getUserById)
+        this.router.get('/:dato', usercontroller_1.default.getUserById);
         //Sign Up
         this.router.post('/', usercontroller_1.default.addUser);
         //Login
-        this.router.get('/login/', usercontroller_1.default.authService);
+        this.router.get('/login/:dato', usercontroller_1.default.authService);
         // //borrar
-        // this.router.delete('/:dato', userController.deleteUser)
+        this.router.delete('/:dato', usercontroller_1.default.deleteUser);
         // //actualizar datos por nombre
-        // this.router.put('/:dato', userController.updateUser)
+        this.router.put('/:dato', usercontroller_1.default.updateUser);
     }
 }
 const userRoutes = new UserRoutes();

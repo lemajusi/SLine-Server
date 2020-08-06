@@ -38,7 +38,6 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield database_1.default.query("SELECT * FROM users WHERE email='" + req.body.email + "' AND password='" + req.body.password + "'");
-                console.log(response);
                 res.send({
                     status: 200,
                     statusText: 'OK',

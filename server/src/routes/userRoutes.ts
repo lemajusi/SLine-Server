@@ -15,19 +15,19 @@ class UserRoutes {
         this.router.get('/', userController.getUsers);
      
         // //search by id
-        // this.router.get('/:dato',userController.getUserById)
+        this.router.get('/:dato',userController.getUserById)
      
         //Sign Up
         this.router.post('/', userController.addUser);
         
         //Login
-        this.router.get('/login/', userController.authService)
+        this.router.get('/login/:dato', userController.authService)
         
         // //borrar
-        // this.router.delete('/:dato', userController.deleteUser)
+        this.router.delete('/:dato', userController.deleteUser)
      
         // //actualizar datos por nombre
-        // this.router.put('/:dato', userController.updateUser)
+        this.router.put('/:dato', userController.updateUser)
     }
 }
 
