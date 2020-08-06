@@ -96,6 +96,11 @@ class CasoController {
             }
         });
     }
+    updateCaso(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const caso = yield database_1.default.query("select * from casos where id ='" + req.body.id);
+        });
+    }
 }
 const casoController = new CasoController();
 exports.default = casoController;
