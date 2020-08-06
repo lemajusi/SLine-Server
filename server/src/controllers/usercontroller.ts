@@ -12,6 +12,7 @@ class UserController {
         }
         
     }
+<<<<<<< Updated upstream
     public async Usuario (req: Request, res: Response) {
         const result = await pool.query("select * from usuario where username = '" + req.params.dato +"'")
         const resultado = result.rows
@@ -19,6 +20,29 @@ class UserController {
             res.json("no existe ese usuario")
         }else{
             res.json(resultado)            
+=======
+
+    public async authService(req: Request, res: Response){
+        try {
+            console.log(req.body)
+            const response = await pool.query("SELECT * FROM users WHERE email='"
+            + req.body.email +"' AND password='"
+            + req.body.password +"'")
+            console.log(response)
+            res.send({
+                status: 200,
+                statusText: 'OK',
+                message: 'Usuario existente',
+                data: response.rows
+            })
+        } catch (error) {
+            console.error(error);
+            res.send({
+                status: 403,
+                statusText: 'Error',
+                message: 'Email y/o password no coindicen.'
+            })
+>>>>>>> Stashed changes
         }
     }
     public async CrearUsuario(req:Request, res: Response){

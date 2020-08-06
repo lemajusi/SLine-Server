@@ -11,8 +11,6 @@ class UserRoutes {
         this.config();
     }
     config() {
-        //rutas
-        //listar todos
         this.router.get('/', usercontroller_1.default.Lista);
         //listar por nombre
         this.router.get('/:dato', usercontroller_1.default.Usuario);
