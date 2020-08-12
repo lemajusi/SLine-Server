@@ -13,7 +13,7 @@ class UserRoutes {
         //Search by id
         this.router.get('/id/:dato', user_controller_1.userController.getUserById);
         //Sign Up
-        this.router.post('/', user_controller_1.userController.addUser);
+        this.router.post('/signup', user_controller_1.userController.signUp);
         //Login
         this.router.post('/login', user_controller_1.userController.authService);
         //Delete

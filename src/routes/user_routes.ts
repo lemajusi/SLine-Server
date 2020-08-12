@@ -17,7 +17,7 @@ class UserRoutes {
         this.router.get('/id/:dato',userController.getUserById)
      
         //Sign Up
-        this.router.post('/', userController.addUser);
+        this.router.post('/signup', userController.signUp);
         
         //Login
         this.router.post('/login', userController.authService)

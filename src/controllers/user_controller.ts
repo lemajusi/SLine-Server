@@ -15,9 +15,8 @@ class UserController {
         } catch (error) {
             console.error(error);
             res.send({
-                status: 403,
-                statusText: "Error",
-                message: "Can't Get"
+                status: res.status,
+                statusText: res.statusMessage
             });
         }
     }
@@ -71,14 +70,12 @@ class UserController {
         }
     }
 
-    public async addUser(req: Request, res: Response){
+    public async signUp(req: Request, res: Response){
+
+        let user: UserDto = req.body; 
+
         try {
-            const response = await pool.query("insert into users (username, email, password, sexo, fechanac) values ('"+
-            req.body.username+"','"+
-            req.body.email+"','"+
-            req.body.password+"','"+
-            req.body.sexo+"','"+
-            req.body.fechanac+"')");
+            const response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES (${user.username}, ${user.email}, ${user.password}, ${user.sexo}, ${user.fechanac})`);
 
             res.send({
                 status: 200,
