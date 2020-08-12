@@ -1,22 +1,25 @@
 import { Router } from 'express';
 import casoController from '../controllers/casocontroller'
-class CasoRoutes{
+
+class CasesRoutes{
     public router: Router = Router();
+
     constructor(){
         this.config()
     }
+
     public config():void{
         this.router.get('/', casoController.getCasos)
         
-        //casos por id 
+        //By case id
         this.router.get('/id/:dato', casoController.getCasoById)
 
-        //casos de usuario Perfil
+        //By user id
         this.router.get('/user/:dato', casoController.getCasoByuserId)
 
-        //update caso
+        //Update
         this.router.post('/', casoController.addCaso)
     }
-}
-const casoRoutes = new CasoRoutes()
-export default casoRoutes.router
+};
+
+export const casesRoutes = new CasesRoutes().router;

@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import userController from './../controllers/usercontroller';
 
 class UserRoutes {
@@ -10,11 +10,10 @@ class UserRoutes {
     }
 
     config(): void {
-
         //Get users
         this.router.get('/', userController.getUsers);
      
-        // //search by id
+        //Search by id
         this.router.get('/:dato',userController.getUserById)
      
         //Sign Up
@@ -23,13 +22,12 @@ class UserRoutes {
         //Login
         this.router.get('/login/:dato', userController.authService)
         
-        // //borrar
+        //Delete
         this.router.delete('/:dato', userController.deleteUser)
      
-        // //actualizar datos por nombre
+        //Update
         this.router.put('/:dato', userController.updateUser)
     }
 }
 
-const userRoutes = new UserRoutes()
-export default userRoutes.router
+export const userRoutes = new UserRoutes().router;
