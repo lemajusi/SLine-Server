@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import userController from './../controllers/usercontroller';
+import { userController } from '../controllers/user_controller';
 
 class UserRoutes {
 
@@ -14,19 +14,19 @@ class UserRoutes {
         this.router.get('/', userController.getUsers);
      
         //Search by id
-        this.router.get('/:dato',userController.getUserById)
+        this.router.get('/id/:dato',userController.getUserById)
      
         //Sign Up
         this.router.post('/', userController.addUser);
         
         //Login
-        this.router.get('/login/:dato', userController.authService)
+        this.router.post('/login', userController.authService)
         
         //Delete
-        this.router.delete('/:dato', userController.deleteUser)
+        this.router.delete('/dlt/:dato', userController.deleteUser)
      
         //Update
-        this.router.put('/:dato', userController.updateUser)
+        this.router.put('/update/:dato', userController.updateUser)
     }
 }
 

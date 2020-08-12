@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import pool from './../database';
+import pool from '../database';
+import { UserDto } from '../models/user';
 
 class UserController {
 
@@ -22,23 +23,27 @@ class UserController {
     }
 
     public async authService(req: Request, res: Response){
+        let user: Partial<UserDto> = req.body;
+
         try {
-            const response = await pool.query("SELECT * FROM users WHERE email='"+ req.body.email +"' AND password='"+ req.body.password +"'")
+            const response = await pool.query("SELECT * FROM users WHERE email='"+ user.email +"' AND password='"+ user.password +"'");
+            
             res.send({
                 status: 200,
                 statusText: 'OK',
                 message: 'Usuario existente',
                 data: response.rows
-            })
+            });
+
         } catch (error) {
             console.error(error);
             res.send({
                 status: 403,
                 statusText: 'Error',
                 message: 'Email y/o password no coindicen.'
-            })
-        }
-    }
+            });
+        };
+    };
 
     public async getUserById(req: Request, res: Response) {
         try {
@@ -167,7 +172,6 @@ class UserController {
             }
         }
     }
-}
+};
 
-const userController = new UserController()
-export default userController
+export const userController = new UserController();

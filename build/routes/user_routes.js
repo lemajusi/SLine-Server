@@ -11,15 +11,15 @@ class UserRoutes {
         //Get users
         this.router.get('/', user_controller_1.userController.getUsers);
         //Search by id
-        this.router.get('/:dato', user_controller_1.userController.getUserById);
+        this.router.get('/id/:dato', user_controller_1.userController.getUserById);
         //Sign Up
         this.router.post('/', user_controller_1.userController.addUser);
         //Login
-        this.router.get('/login/:dato', user_controller_1.userController.authService);
+        this.router.post('/login', user_controller_1.userController.authService);
         //Delete
-        this.router.delete('/:dato', user_controller_1.userController.deleteUser);
+        this.router.delete('/dlt/:dato', user_controller_1.userController.deleteUser);
         //Update
-        this.router.put('/:dato', user_controller_1.userController.updateUser);
+        this.router.put('/update/:dato', user_controller_1.userController.updateUser);
     }
 }
 exports.userRoutes = new UserRoutes().router;
