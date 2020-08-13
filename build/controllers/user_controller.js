@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
+const jwt_simple_1 = __importDefault(require("jwt-simple"));
 class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -20,6 +21,7 @@ class UserController {
                 const response = yield database_1.default.query('SELECT * FROM users');
                 res.send({
                     status: 200,
+                    statusText: 'OK',
                     message: 'Request Successfull',
                     data: response.rows
                 });
@@ -35,22 +37,28 @@ class UserController {
     }
     authService(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            let user = req.body;
             try {
-                const response = yield database_1.default.query("SELECT * FROM users WHERE email='" + user.email + "' AND password='" + user.password + "'");
-                res.send({
-                    status: 200,
-                    statusText: 'OK',
-                    message: 'Usuario existente',
-                    data: response.rows
-                });
+                const response = yield database_1.default.query(`SELECT * FROM users WHERE email='${req.body.email}' AND password='${req.body.password}'`);
+                if (response.rows.length === 1) {
+                    var paylod = response.rows;
+                    var secretKey = "Mb18jl5OMdq8gl5Eu6aqd-YgdQu7E1d3-mdg3FFaarPNB40IJgFZgOBUfbd_o9x1";
+                    var token = jwt_simple_1.default.encode(paylod, secretKey);
+                    res.send({
+                        status: 200,
+                        statusText: 'OK',
+                        message: 'User found',
+                        token: token
+                    });
+                }
+                else if (response.rows.length !== 1)
+                    throw new Error();
             }
             catch (error) {
                 console.error(error);
                 res.send({
-                    status: 403,
-                    statusText: 'Error',
-                    message: 'Email y/o password no coindicen.'
+                    status: 401,
+                    statusText: 'Unauthorized',
+                    message: 'Email y/o password no coinciden.'
                 });
             }
             ;

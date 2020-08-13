@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import pool from '../database';
+import jwt from 'jwt-simple';
+
 import { UserDto } from '../models/user';
 
 class UserController {
@@ -9,6 +11,7 @@ class UserController {
             const response = await pool.query('SELECT * FROM users');
             res.send({
                 status: 200,
+                statusText: 'OK',
                 message: 'Request Successfull',
                 data: response.rows
             })
@@ -22,24 +25,32 @@ class UserController {
     }
 
     public async authService(req: Request, res: Response){
-        let user: Partial<UserDto> = req.body;
 
         try {
-            const response = await pool.query("SELECT * FROM users WHERE email='"+ user.email +"' AND password='"+ user.password +"'");
+            const response = await pool.query(`SELECT * FROM users WHERE email='${req.body.email}' AND password='${req.body.password}'`);
             
-            res.send({
-                status: 200,
-                statusText: 'OK',
-                message: 'Usuario existente',
-                data: response.rows
-            });
+            if(response.rows.length === 1){
 
+                var paylod = response.rows;
+                var secretKey = "Mb18jl5OMdq8gl5Eu6aqd-YgdQu7E1d3-mdg3FFaarPNB40IJgFZgOBUfbd_o9x1";
+                var token = jwt.encode(paylod, secretKey);
+                
+                res.send({
+                    status: 200,
+                    statusText: 'OK',
+                    message: 'User found',
+                    token: token
+                })
+
+            } else if (response.rows.length !== 1) throw new Error();
+            
         } catch (error) {
             console.error(error);
+
             res.send({
-                status: 403,
-                statusText: 'Error',
-                message: 'Email y/o password no coindicen.'
+                status: 401,
+                statusText: 'Unauthorized',
+                message: 'Email y/o password no coinciden.'
             });
         };
     };
