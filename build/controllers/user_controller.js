@@ -40,9 +40,9 @@ class UserController {
             try {
                 const response = yield database_1.default.query(`SELECT * FROM users WHERE email='${req.body.email}' AND password='${req.body.password}'`);
                 if (response.rows.length === 1) {
-                    var paylod = response.rows;
-                    var secretKey = "Mb18jl5OMdq8gl5Eu6aqd-YgdQu7E1d3-mdg3FFaarPNB40IJgFZgOBUfbd_o9x1";
-                    var token = jwt_simple_1.default.encode(paylod, secretKey);
+                    let payload = response.rows[0];
+                    let secretKey = "Mb18jl5OMdq8gl5Eu6aqd-YgdQu7E1d3-mdg3FFaarPNB40IJgFZgOBUfbd_o9x1";
+                    let token = jwt_simple_1.default.encode(payload, secretKey);
                     res.send({
                         status: 200,
                         statusText: 'OK',
@@ -56,8 +56,8 @@ class UserController {
             catch (error) {
                 console.error(error);
                 res.send({
-                    status: 401,
-                    statusText: 'Unauthorized',
+                    status: 500,
+                    statusText: 'Internal error',
                     message: 'Email y/o password no coinciden.'
                 });
             }
