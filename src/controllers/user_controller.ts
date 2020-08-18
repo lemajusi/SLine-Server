@@ -1,10 +1,11 @@
-import { Request, Response, text } from 'express';
+import { Request, Response, json } from 'express';
 import pool from '../database';
-import jwt from 'jwt-simple';
-
-const bcrypt = require('bcrypt');
-
+import { HashingService } from './../services/hashing';
+import { JwtService } from './../services/jwt';
 import { UserDto } from '../models/user';
+
+let hashingService = new HashingService();
+let jwtService = new JwtService();
 
 class UserController {
 
@@ -28,23 +29,26 @@ class UserController {
 
     public async authService(req: Request, res: Response){
 
+        const user: UserDto = req.body;
+
         try {
-            const response = await pool.query(`SELECT * FROM users WHERE email='${req.body.email}' AND password='${req.body.password}'`);
+            const response = await pool.query(`SELECT password FROM users WHERE username='${user.username}' AND email='${user.email}'`);
             
-            if(response.rows.length === 1){
+            if(response.rowCount === 1 && response.rows[0]){
+                let dbPass: string = response.rows[0].password; 
+                
+                if(await hashingService.comparePasswords(user.password, dbPass).then(result => result)){
+                    let token = jwtService.createToken(req.body);
 
-                let payload = response.rows[0];
-                let secretKey = "Mb18jl5OMdq8gl5Eu6aqd-YgdQu7E1d3-mdg3FFaarPNB40IJgFZgOBUfbd_o9x1";
-                let token = jwt.encode(payload, secretKey);
+                    res.send({
+                        "status": 200,
+                        "statusText": 'Ok',
+                        "message": 'The username and password combination is correct!' 
+                    })
+                }
 
-                res.send({
-                    status: 200,
-                    statusText: 'OK',
-                    message: 'User found',
-                    token: token
-                })
-
-            } else if (response.rows.length !== 1) throw new Error();
+                if(!await hashingService.comparePasswords(user.password, dbPass).then(result => result)) throw new Error();
+            } else if (response.rows.length === 0 && !response.rows[0]) throw new Error();
             
         } catch (error) {
             console.error(error);
@@ -88,7 +92,10 @@ class UserController {
         let user: UserDto = req.body;
 
         try {
-            user.password = await bcrypt.hash(user.password, 10);
+            await hashingService.hashPassword(user.password).then((result: any) => {
+                user.password = result;
+                console.log(typeof(result));
+            });
 
             const response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
 
@@ -98,21 +105,21 @@ class UserController {
                     statusMessage: 'Ok',
                     text: 'User created successfully'
                 })
-            } else throw Error
+            } else if (response.rowCount === 0) throw Error();
         
         } catch (error) {
-            let err: string = error.constraint;
+            let err: string = '';
 
             if (error.constraint === 'users_username_key'){
-                err = "Nombre de usuario duplicado";
+                err = 'Username is already in use';
             }
             if (error.constraint === 'users_email_key'){
-                err = "Correo electronico duplicado";
+                err = 'Email is already in use';
             }
 
             res.send({
                 status: 403,
-                statusText: 'Error',
+                statusText: 'Internal error',
                 message: err
             })
         }
@@ -158,7 +165,7 @@ class UserController {
             }
         }
     }
-    
+
     public async deleteUser(req:Request, res:Response){
         const result = await pool.query("select * from usuario where username = '" + req.params.dato +"'")
         const a = result.rows

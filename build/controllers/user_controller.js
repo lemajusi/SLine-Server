@@ -13,8 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
-const jwt_simple_1 = __importDefault(require("jwt-simple"));
-const bcrypt = require('bcrypt');
+const hashing_1 = require("./../services/hashing");
+const jwt_1 = require("./../services/jwt");
+let hashingService = new hashing_1.HashingService();
+let jwtService = new jwt_1.JwtService();
 class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -38,20 +40,23 @@ class UserController {
     }
     authService(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const user = req.body;
             try {
-                const response = yield database_1.default.query(`SELECT * FROM users WHERE email='${req.body.email}' AND password='${req.body.password}'`);
-                if (response.rows.length === 1) {
-                    let payload = response.rows[0];
-                    let secretKey = "Mb18jl5OMdq8gl5Eu6aqd-YgdQu7E1d3-mdg3FFaarPNB40IJgFZgOBUfbd_o9x1";
-                    let token = jwt_simple_1.default.encode(payload, secretKey);
-                    res.send({
-                        status: 200,
-                        statusText: 'OK',
-                        message: 'User found',
-                        token: token
-                    });
+                const response = yield database_1.default.query(`SELECT password FROM users WHERE username='${user.username}' AND email='${user.email}'`);
+                if (response.rowCount === 1 && response.rows[0]) {
+                    let dbPass = response.rows[0].password;
+                    if (yield hashingService.comparePasswords(user.password, dbPass).then(result => result)) {
+                        let token = jwtService.createToken(req.body);
+                        res.send({
+                            "status": 200,
+                            "statusText": 'Ok',
+                            "message": 'The username and password combination is correct!'
+                        });
+                    }
+                    if (!(yield hashingService.comparePasswords(user.password, dbPass).then(result => result)))
+                        throw new Error();
                 }
-                else if (response.rows.length !== 1)
+                else if (response.rows.length === 0 && !response.rows[0])
                     throw new Error();
             }
             catch (error) {
@@ -98,7 +103,10 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             let user = req.body;
             try {
-                user.password = yield bcrypt.hash(user.password, 10);
+                yield hashingService.hashPassword(user.password).then((result) => {
+                    user.password = result;
+                    console.log(typeof (result));
+                });
                 const response = yield database_1.default.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
                 if (response.rowCount === 1) {
                     res.send({
@@ -107,20 +115,20 @@ class UserController {
                         text: 'User created successfully'
                     });
                 }
-                else
-                    throw Error;
+                else if (response.rowCount === 0)
+                    throw Error();
             }
             catch (error) {
-                let err = error.constraint;
+                let err = '';
                 if (error.constraint === 'users_username_key') {
-                    err = "Nombre de usuario duplicado";
+                    err = 'Username is already in use';
                 }
                 if (error.constraint === 'users_email_key') {
-                    err = "Correo electronico duplicado";
+                    err = 'Email is already in use';
                 }
                 res.send({
                     status: 403,
-                    statusText: 'Error',
+                    statusText: 'Internal error',
                     message: err
                 });
             }
