@@ -1,6 +1,8 @@
-import { Request, Response } from 'express';
+import { Request, Response, text } from 'express';
 import pool from '../database';
 import jwt from 'jwt-simple';
+
+const bcrypt = require('bcrypt');
 
 import { UserDto } from '../models/user';
 
@@ -80,31 +82,32 @@ class UserController {
             })
         }
     }
-
+    
     public async signUp(req: Request, res: Response){
-
-        let user: UserDto = req.body; 
+        
+        let user: UserDto = req.body;
 
         try {
-            const response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES (${user.username}, ${user.email}, ${user.password}, ${user.sexo}, ${user.fechanac})`);
+            user.password = await bcrypt.hash(user.password, 10);
 
-            res.send({
-                status: 200,
-                message: 'User created successfully',
-            })
+            const response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
+
+            if(response.rowCount === 1){
+                res.send({
+                    status: 200,
+                    statusMessage: 'Ok',
+                    text: 'User created successfully'
+                })
+            } else throw Error
         
         } catch (error) {
-            console.log(error);
+            let err: string = error.constraint;
 
-            console.log(req.body)
-
-            let err = undefined;
-
-            if (error.constraint == "usuario_username_key"){
-                err = "Usuario duplicado.";
+            if (error.constraint === 'users_username_key'){
+                err = "Nombre de usuario duplicado";
             }
-            if (error.constraint == "usuario_email_key"){
-                err = "Email duplicado.";
+            if (error.constraint === 'users_email_key'){
+                err = "Correo electronico duplicado";
             }
 
             res.send({
@@ -155,6 +158,7 @@ class UserController {
             }
         }
     }
+    
     public async deleteUser(req:Request, res:Response){
         const result = await pool.query("select * from usuario where username = '" + req.params.dato +"'")
         const a = result.rows

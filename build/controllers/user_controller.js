@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
 const jwt_simple_1 = __importDefault(require("jwt-simple"));
+const bcrypt = require('bcrypt');
 class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -97,21 +98,25 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             let user = req.body;
             try {
-                const response = yield database_1.default.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES (${user.username}, ${user.email}, ${user.password}, ${user.sexo}, ${user.fechanac})`);
-                res.send({
-                    status: 200,
-                    message: 'User created successfully',
-                });
+                user.password = yield bcrypt.hash(user.password, 10);
+                const response = yield database_1.default.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
+                if (response.rowCount === 1) {
+                    res.send({
+                        status: 200,
+                        statusMessage: 'Ok',
+                        text: 'User created successfully'
+                    });
+                }
+                else
+                    throw Error;
             }
             catch (error) {
-                console.log(error);
-                console.log(req.body);
-                let err = undefined;
-                if (error.constraint == "usuario_username_key") {
-                    err = "Usuario duplicado.";
+                let err = error.constraint;
+                if (error.constraint === 'users_username_key') {
+                    err = "Nombre de usuario duplicado";
                 }
-                if (error.constraint == "usuario_email_key") {
-                    err = "Email duplicado.";
+                if (error.constraint === 'users_email_key') {
+                    err = "Correo electronico duplicado";
                 }
                 res.send({
                     status: 403,
