@@ -14,7 +14,7 @@ class HashingService {
     hashPassword(plainText) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return new Promise(resolve => resolve(bcrypt.hash(plainText, 10)));
+                return new Promise(resolve => resolve(bcrypt.hashSync(plainText, 10)));
             }
             catch (error) {
                 console.log(error);
@@ -24,10 +24,11 @@ class HashingService {
     comparePasswords(inPass, dbPass) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                return new Promise(resolve => resolve(bcrypt.compareSync(inPass, dbPass)));
+                return new Promise(resolve => resolve(bcrypt.compare(inPass, dbPass)));
             }
             catch (error) {
                 console.log(error);
+                return error;
             }
         });
     }

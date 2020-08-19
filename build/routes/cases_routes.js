@@ -4,21 +4,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const casocontroller_1 = __importDefault(require("../controllers/casocontroller"));
+const casesController_1 = __importDefault(require("../controllers/casesController"));
 class CasesRoutes {
     constructor() {
         this.router = express_1.Router();
         this.config();
     }
     config() {
-        this.router.get('/', casocontroller_1.default.getCasos);
+        this.router.get('/', casesController_1.default.getCasos);
         //By case id
-        this.router.get('/id/:dato', casocontroller_1.default.getCasoById);
+        this.router.get('/id/:dato', casesController_1.default.getCasoById);
         //By user id
-        this.router.get('/user/:dato', casocontroller_1.default.getCasoByuserId);
+        this.router.get('/user/:dato', casesController_1.default.getCasoByuserId);
         //Update
-        this.router.post('/', casocontroller_1.default.addCaso);
+        this.router.post('/', casesController_1.default.addCaso);
     }
 }
+exports.CasesRoutes = CasesRoutes;
 ;
-exports.casesRoutes = new CasesRoutes().router;

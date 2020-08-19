@@ -4,17 +4,18 @@ export class HashingService{
 
     public async hashPassword(plainText: string){
         try {
-            return new Promise(resolve => resolve(bcrypt.hash(plainText, 10)));
+            return new Promise(resolve => resolve(bcrypt.hashSync(plainText, 10)));
         } catch (error) {
             console.log(error)
         }
     }
 
-    public async comparePasswords(inPass: string, dbPass: string){
+    public async comparePasswords(inPass: string, dbPass: string): Promise<any>{
         try {
-            return new Promise(resolve => resolve(bcrypt.compareSync(inPass, dbPass)));
+            return new Promise(resolve => resolve(bcrypt.compare(inPass, dbPass)));
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            return error;
         }
     }
 }

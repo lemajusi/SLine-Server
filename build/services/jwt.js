@@ -18,10 +18,7 @@ class JwtService {
     createToken(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let promise = new Promise((resolve) => {
-                    resolve(jwt_simple_1.default.encode(payload, secretKey));
-                });
-                return promise;
+                return new Promise(resolve => resolve(jwt_simple_1.default.encode(payload, secretKey)));
             }
             catch (error) {
                 console.log(error);

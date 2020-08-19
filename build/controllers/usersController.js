@@ -134,4 +134,5 @@ class UserController {
         });
     }
 }
+exports.UserController = UserController;
 ;

@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import indexController from '../controllers/indexcontroller';
+import { IndexController } from '../controllers/indexcontroller';
+
+let indexController = new IndexController();
 
 class IndexRoutes {
     public router: Router = Router();

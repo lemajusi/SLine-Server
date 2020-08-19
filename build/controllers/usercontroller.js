@@ -20,6 +20,7 @@ class UserController {
                 const response = yield database_1.default.query('SELECT * FROM users');
                 res.send({
                     status: 200,
+                    statusText: 'OK',
                     message: 'Request Successfull',
                     data: response.rows
                 });
@@ -27,37 +28,12 @@ class UserController {
             catch (error) {
                 console.error(error);
                 res.send({
-                    status: 403,
-                    statusText: "Error",
-                    message: "Can't Get"
+                    status: res.status,
+                    statusText: res.statusMessage
                 });
             }
         });
     }
-    authService(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let user = req.body;
-            try {
-                const response = yield database_1.default.query("SELECT * FROM users WHERE email='" + user.email + "' AND password='" + user.password + "'");
-                res.send({
-                    status: 200,
-                    statusText: 'OK',
-                    message: 'Usuario existente',
-                    data: response.rows
-                });
-            }
-            catch (error) {
-                console.error(error);
-                res.send({
-                    status: 403,
-                    statusText: 'Error',
-                    message: 'Email y/o password no coindicen.'
-                });
-            }
-            ;
-        });
-    }
-    ;
     getUserById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -82,38 +58,6 @@ class UserController {
                 res.send({
                     status: 404,
                     statusText: "error"
-                });
-            }
-        });
-    }
-    addUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const response = yield database_1.default.query("insert into users (username, email, password, sexo, fechanac) values ('" +
-                    req.body.username + "','" +
-                    req.body.email + "','" +
-                    req.body.password + "','" +
-                    req.body.sexo + "','" +
-                    req.body.fechanac + "')");
-                res.send({
-                    status: 200,
-                    message: 'User created successfully',
-                });
-            }
-            catch (error) {
-                console.log(error);
-                console.log(req.body);
-                let err = undefined;
-                if (error.constraint == "usuario_username_key") {
-                    err = "Usuario duplicado.";
-                }
-                if (error.constraint == "usuario_email_key") {
-                    err = "Email duplicado.";
-                }
-                res.send({
-                    status: 403,
-                    statusText: 'Error',
-                    message: err
                 });
             }
         });
@@ -191,4 +135,3 @@ class UserController {
     }
 }
 ;
-exports.userController = new UserController();

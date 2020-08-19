@@ -1,7 +1,9 @@
 import { Router } from 'express';
-import { userController } from '../controllers/user_controller';
+import { UserController } from '../controllers/usersController';
 
-class UserRoutes {
+let userController = new UserController();
+
+export class UserRoutes {
 
     public router: Router = Router();
 
@@ -16,12 +18,6 @@ class UserRoutes {
         //Search by id
         this.router.get('/id/:dato',userController.getUserById)
      
-        //Sign Up
-        this.router.post('/signup', userController.signUp);
-        
-        //Login
-        this.router.post('/login', userController.authService)
-        
         //Delete
         this.router.delete('/dlt/:dato', userController.deleteUser)
      
@@ -29,5 +25,3 @@ class UserRoutes {
         this.router.put('/update/:dato', userController.updateUser)
     }
 }
-
-export const userRoutes = new UserRoutes().router;

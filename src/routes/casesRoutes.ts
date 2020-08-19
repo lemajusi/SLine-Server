@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import casoController from '../controllers/casocontroller'
+import casoController from '../controllers/casesController'
 
-class CasesRoutes{
+export class CasesRoutes{
     public router: Router = Router();
 
     constructor(){
@@ -21,5 +21,3 @@ class CasesRoutes{
         this.router.post('/', casoController.addCaso)
     }
 };
-
-export const casesRoutes = new CasesRoutes().router;

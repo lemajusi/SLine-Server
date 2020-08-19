@@ -3,9 +3,13 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 import { indexRoutes } from './routes/index_routes';
-import { userRoutes } from './routes/user_routes';
-import { homeRoutes } from './routes/home_routes';
-import { casesRoutes } from './routes/cases_routes';
+import { UserRoutes } from './routes/userRoutes';
+import { CasesRoutes } from './routes/casesRoutes';
+import { AuthRoutes } from './routes/authRoutes'
+
+let userRoutes = new UserRoutes();
+let casesRoutes = new CasesRoutes();
+let authRoutes = new AuthRoutes()
 
 class Server {
     app: Application;
@@ -27,9 +31,10 @@ class Server {
     //rutas de la pagina
     routes(): void{
         this.app.use('/', indexRoutes);
-        this.app.use('/home', homeRoutes);
-        this.app.use('/users', userRoutes);
-        this.app.use('/cases', casesRoutes);
+        this.app.use('/users', userRoutes.router);
+        this.app.use('/cases', casesRoutes.router);
+        this.app.use('/auth', authRoutes.router);
+
     }
 
     start():void{

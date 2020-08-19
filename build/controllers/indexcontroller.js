@@ -23,5 +23,4 @@ class IndexController {
         });
     }
 }
-const indexController = new IndexController();
-exports.default = indexController;
+exports.IndexController = IndexController;

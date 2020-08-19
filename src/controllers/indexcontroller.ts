@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import pool from '../database';
-class IndexController {
+
+export class IndexController {
     public async index (req: Request, res: Response) {
         const result = await pool.query("select now()")
         const respuesta = result.rows[0].now
@@ -8,5 +9,3 @@ class IndexController {
         res.json("respuesta"+ respuesta)
     }
 }
-const indexController = new IndexController();
-export default indexController
