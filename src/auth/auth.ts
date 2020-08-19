@@ -14,14 +14,14 @@ export class AuthService{
         const user: UserDto = req.body;
 
         try {
-            const response = await pool.query(`SELECT password FROM users WHERE email='${user.email}'`);
+            const response = await pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
             
             if(response.rowCount === 1 && response.rows[0]){
                 let dbPass: string = response.rows[0].password;
                 let match = await hashingService.comparePasswords(user.password, dbPass).then(result => result);
 
                 if(match){
-                    let payload = { sub: req.body.id }
+                    let payload = { "sub": response.rows[0].id }
                     let token = await jwtService.createToken(payload).then(result => result);
 
                     res.send({

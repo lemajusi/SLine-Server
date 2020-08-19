@@ -22,12 +22,12 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             const user = req.body;
             try {
-                const response = yield database_1.default.query(`SELECT password FROM users WHERE email='${user.email}'`);
+                const response = yield database_1.default.query(`SELECT * FROM users WHERE email='${user.email}'`);
                 if (response.rowCount === 1 && response.rows[0]) {
                     let dbPass = response.rows[0].password;
                     let match = yield hashingService.comparePasswords(user.password, dbPass).then(result => result);
                     if (match) {
-                        let payload = { sub: req.body.id };
+                        let payload = { "sub": response.rows[0].id };
                         let token = yield jwtService.createToken(payload).then(result => result);
                         res.send({
                             "status": 200,
