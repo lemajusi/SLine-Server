@@ -8,7 +8,15 @@ export class JwtService{
             return new Promise(resolve => resolve(jwt.encode(payload, secretKey)));
 
         } catch (error) {
-            console.log(error)
+            console.log(error);
+        }
+    }
+
+    public async decodeToken(token: string){
+        try {
+            return jwt.decode(token, secretKey);
+        } catch (error) {
+            console.log(error);
         }
     }
 }

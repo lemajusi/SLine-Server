@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import pool from '../database';
 import { HashingService } from './../services/hashing';
 import { JwtService } from './../services/jwt';
@@ -21,7 +21,8 @@ export class AuthService{
                 let match = await hashingService.comparePasswords(user.password, dbPass).then(result => result);
 
                 if(match){
-                    let token = await jwtService.createToken(req.body).then(result => result);
+                    let payload = { sub: req.body.id }
+                    let token = await jwtService.createToken(payload).then(result => result);
 
                     res.send({
                         "status": 200,
@@ -80,5 +81,28 @@ export class AuthService{
                 message: err
             })
         }
-    } 
+    };
+
+    public async checkAuthenticated(req: Request, res: Response){
+        if(!req.header('authorization')){
+            return res.send({
+                "status": 401,
+                "statusText": 'Unauthorized',
+                "message": 'Missing Auth Header'
+            });
+        }
+
+        let token: any = req.header('authorization')?.split(' ')[1];
+        let payload = await jwtService.decodeToken(token).then(res => res);
+
+        if(!payload){
+            return res.send({
+                "status": 401,
+                "statusText": 'Unauthorized',
+                "message": 'Missing Auth Invalid'
+            });
+        }
+
+        req.body = payload;
+    }
 }

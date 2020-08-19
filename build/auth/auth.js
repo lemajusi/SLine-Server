@@ -27,7 +27,8 @@ class AuthService {
                     let dbPass = response.rows[0].password;
                     let match = yield hashingService.comparePasswords(user.password, dbPass).then(result => result);
                     if (match) {
-                        let token = yield jwtService.createToken(req.body).then(result => result);
+                        let payload = { sub: req.body.id };
+                        let token = yield jwtService.createToken(payload).then(result => result);
                         res.send({
                             "status": 200,
                             "statusText": 'Ok',
@@ -83,6 +84,29 @@ class AuthService {
                     message: err
                 });
             }
+        });
+    }
+    ;
+    checkAuthenticated(req, res) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!req.header('authorization')) {
+                return res.send({
+                    "status": 401,
+                    "statusText": 'Unauthorized',
+                    "message": 'Missing Auth Header'
+                });
+            }
+            let token = (_a = req.header('authorization')) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+            let payload = yield jwtService.decodeToken(token).then(res => res);
+            if (!payload) {
+                return res.send({
+                    "status": 401,
+                    "statusText": 'Unauthorized',
+                    "message": 'Missing Auth Invalid'
+                });
+            }
+            req.body = payload;
         });
     }
 }
