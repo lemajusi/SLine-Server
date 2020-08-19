@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.indexRoutes = void 0;
 const express_1 = require("express");
 const indexcontroller_1 = __importDefault(require("../controllers/indexcontroller"));
 class IndexRoutes {
