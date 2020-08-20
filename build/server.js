@@ -6,13 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
-const index_routes_1 = require("./routes/index_routes");
+const indexRoutes_1 = require("./routes/indexRoutes");
 const userRoutes_1 = require("./routes/userRoutes");
 const casesRoutes_1 = require("./routes/casesRoutes");
 const authRoutes_1 = require("./routes/authRoutes");
 let userRoutes = new userRoutes_1.UserRoutes();
 let casesRoutes = new casesRoutes_1.CasesRoutes();
 let authRoutes = new authRoutes_1.AuthRoutes();
+let indexRoutes = new indexRoutes_1.IndexRoutes();
 class Server {
     constructor() {
         this.app = express_1.default();
@@ -28,7 +29,7 @@ class Server {
     }
     //rutas de la pagina
     routes() {
-        this.app.use('/', index_routes_1.indexRoutes);
+        this.app.use('/', indexRoutes.router);
         this.app.use('/users', userRoutes.router);
         this.app.use('/cases', casesRoutes.router);
         this.app.use('/auth', authRoutes.router);
