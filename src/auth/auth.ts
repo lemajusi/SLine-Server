@@ -69,10 +69,10 @@ export class AuthService{
 
             if (error.constraint === 'users_username_key'){
                 err = 'Username is already in use';
-            }
-
-            if (error.constraint === 'users_email_key'){
+            } else if (error.constraint === 'users_email_key'){
                 err = 'Email is already in use';
+            } else if ( err === '' ){
+                err = 'Algun otro error'
             }
             
             res.send({
@@ -84,25 +84,31 @@ export class AuthService{
     };
 
     public async checkAuthenticated(req: Request, res: Response){
-        if(!req.header('authorization')){
-            return res.send({
-                "status": 401,
-                "statusText": 'Unauthorized',
-                "message": 'Missing Auth Header'
-            });
+        try {
+            if(!req.header('authorization')){
+                return res.send({
+                    "status": 401,
+                    "statusText": 'Unauthorized',
+                    "message": 'Missing Auth Header'
+                });
+            }
+    
+            let token: any = req.header('authorization')?.split(' ')[1];
+            let payload = await jwtService.decodeToken(token).then(res => res);
+    
+    
+            if(!payload){
+                return res.send({
+                    "status": 401,
+                    "statusText": 'Unauthorized',
+                    "message": 'Missing Auth Invalid'
+                });
+            }
+
+            req.body = payload;
+
+        } catch (error) {
+            console.log(error);
         }
-
-        let token: any = req.header('authorization')?.split(' ')[1];
-        let payload = await jwtService.decodeToken(token).then(res => res);
-
-        if(!payload){
-            return res.send({
-                "status": 401,
-                "statusText": 'Unauthorized',
-                "message": 'Missing Auth Invalid'
-            });
-        }
-
-        req.body = payload;
     }
 }

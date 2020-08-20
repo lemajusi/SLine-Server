@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/usersController';
+import { AuthService } from './../auth/auth';
 
 let userController = new UserController();
+let authService = new AuthService();
 
 export class UserRoutes {
 

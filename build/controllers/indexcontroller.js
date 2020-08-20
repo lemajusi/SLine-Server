@@ -16,10 +16,13 @@ const database_1 = __importDefault(require("../database"));
 class IndexController {
     index(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield database_1.default.query("select now()");
-            const respuesta = result.rows[0].now;
-            console.log(respuesta);
-            res.json("respuesta" + respuesta);
+            try {
+                const response = yield database_1.default.query("SELECT NOW()");
+                res.json(`Respuesta: ${response.rows[0].now}`);
+            }
+            catch (error) {
+                console.error(error);
+            }
         });
     }
 }

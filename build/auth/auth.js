@@ -75,8 +75,11 @@ class AuthService {
                 if (error.constraint === 'users_username_key') {
                     err = 'Username is already in use';
                 }
-                if (error.constraint === 'users_email_key') {
+                else if (error.constraint === 'users_email_key') {
                     err = 'Email is already in use';
+                }
+                else if (err === '') {
+                    err = 'Algun otro error';
                 }
                 res.send({
                     status: 403,
@@ -90,23 +93,28 @@ class AuthService {
     checkAuthenticated(req, res) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            if (!req.header('authorization')) {
-                return res.send({
-                    "status": 401,
-                    "statusText": 'Unauthorized',
-                    "message": 'Missing Auth Header'
-                });
+            try {
+                if (!req.header('authorization')) {
+                    return res.send({
+                        "status": 401,
+                        "statusText": 'Unauthorized',
+                        "message": 'Missing Auth Header'
+                    });
+                }
+                let token = (_a = req.header('authorization')) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+                let payload = yield jwtService.decodeToken(token).then(res => res);
+                if (!payload) {
+                    return res.send({
+                        "status": 401,
+                        "statusText": 'Unauthorized',
+                        "message": 'Missing Auth Invalid'
+                    });
+                }
+                req.body = payload;
             }
-            let token = (_a = req.header('authorization')) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
-            let payload = yield jwtService.decodeToken(token).then(res => res);
-            if (!payload) {
-                return res.send({
-                    "status": 401,
-                    "statusText": 'Unauthorized',
-                    "message": 'Missing Auth Invalid'
-                });
+            catch (error) {
+                console.log(error);
             }
-            req.body = payload;
         });
     }
 }

@@ -2,7 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const usersController_1 = require("../controllers/usersController");
+const auth_1 = require("./../auth/auth");
 let userController = new usersController_1.UserController();
+let authService = new auth_1.AuthService();
 class UserRoutes {
     constructor() {
         this.router = express_1.Router();

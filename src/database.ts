@@ -1,9 +1,11 @@
 import { Pool } from 'pg';
 
-export default new Pool({ 
-    host: 'localhost',
-    user: 'postgres',
-    password: 'root',
-    database: 'sline',
+const pool = new Pool({
+    user: 'uphklycrv4jvhvqjjher',
+    host: 'bjmmne3jixgqyv36mzsg-postgresql.services.clever-cloud.com',
+    database: 'bjmmne3jixgqyv36mzsg',
+    password: 'PROJmgQt31Z4auSBaFou',
     port: 5432
 });
+
+export default pool;
