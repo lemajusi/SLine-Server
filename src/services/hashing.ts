@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-export class HashingService{
+export const hashingService = new class HashingService{
 
     public async hashPassword(plainText: string){
         try {

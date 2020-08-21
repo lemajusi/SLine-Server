@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import pool from '../database';
+import { pool } from '../database';
 
-export class IndexController {
+export const indexController = new class IndexController {
     public async index (req: Request, res: Response) {
 
         try {

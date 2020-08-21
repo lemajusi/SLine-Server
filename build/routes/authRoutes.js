@@ -2,17 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_1 = require("../auth/auth");
-let authService = new auth_1.AuthService();
-class AuthRoutes {
+exports.authRoutes = new class AuthRoutes {
     constructor() {
         this.router = express_1.Router();
         this.config();
     }
     config() {
         //Sign Up
-        this.router.post('/signup', authService.signUp);
+        this.router.post('/signup', auth_1.authService.signUp);
         //Login
-        this.router.post('/login', authService.authService);
+        this.router.post('/login', auth_1.authService.authService);
     }
-}
-exports.AuthRoutes = AuthRoutes;
+};

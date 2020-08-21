@@ -8,16 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../database"));
-class UserController {
+const database_1 = require("../database");
+exports.userController = new class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield database_1.default.query('SELECT * FROM users');
+                const response = yield database_1.pool.query('SELECT * FROM users');
                 res.send({
                     status: 200,
                     statusText: 'OK',
@@ -37,7 +34,7 @@ class UserController {
     getUserById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield database_1.default.query("SELECT * FROM users WHERE id = '" + req.params.dato + "'");
+                const response = yield database_1.pool.query("SELECT * FROM users WHERE id = '" + req.params.dato + "'");
                 if (response.rows == null) {
                     res.send({
                         status: 403,
@@ -64,7 +61,7 @@ class UserController {
     }
     updateUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield database_1.default.query("select * from usuario where username = '" + req.params.dato + "'");
+            const result = yield database_1.pool.query("select * from usuario where username = '" + req.params.dato + "'");
             const a = result.rows;
             console.log(result.rows);
             if (a[0] == null) {
@@ -76,7 +73,7 @@ class UserController {
             }
             else {
                 try {
-                    const result = yield database_1.default.query("update usuario set username='" + req.body.username +
+                    const result = yield database_1.pool.query("update usuario set username='" + req.body.username +
                         "', email='" + req.body.email +
                         "', password='" + req.body.password +
                         "', sexo='" + req.body.sexo +
@@ -106,7 +103,7 @@ class UserController {
     }
     deleteUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield database_1.default.query("select * from usuario where username = '" + req.params.dato + "'");
+            const result = yield database_1.pool.query("select * from usuario where username = '" + req.params.dato + "'");
             const a = result.rows;
             console.log(result.rows);
             if (a[0] == null) {
@@ -116,7 +113,7 @@ class UserController {
             }
             else {
                 try {
-                    const result = yield database_1.default.query("delete from usuario where username = '" + req.params.dato + "'");
+                    const result = yield database_1.pool.query("delete from usuario where username = '" + req.params.dato + "'");
                     res.send({
                         status: 200,
                         statusText: "Usuario eliminado"
@@ -133,6 +130,4 @@ class UserController {
             }
         });
     }
-}
-;
-exports.userController = new UserController();
+};

@@ -1,9 +1,7 @@
 import { Router } from 'express';
-import { IndexController } from '../controllers/indexController';
+import { indexController } from '../controllers/indexController';
 
-let indexController = new IndexController();
-
-export class IndexRoutes {
+export const indexRoutes = new class IndexRoutes {
     public router: Router = Router();
 
     constructor() {

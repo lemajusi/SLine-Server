@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const usersController_1 = require("../controllers/usersController");
-class UserRoutes {
+exports.userRoutes = new class UserRoutes {
     constructor() {
         this.router = express_1.Router();
         this.config();
@@ -17,5 +17,4 @@ class UserRoutes {
         //Update
         this.router.put('/update/:dato', usersController_1.userController.updateUser);
     }
-}
-exports.UserRoutes = UserRoutes;
+};

@@ -3,7 +3,7 @@ import { userController } from '../controllers/usersController';
 import { authService } from './../auth/auth';
 
 
-export class UserRoutes {
+export const userRoutes = new class UserRoutes {
 
     public router: Router = Router();
 

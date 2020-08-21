@@ -2,15 +2,11 @@ import express, { Application } from "express";
 import morgan from 'morgan';
 import cors from 'cors';
 
-import { IndexRoutes } from './routes/indexRoutes';
-import { UserRoutes } from './routes/userRoutes';
-import { CasesRoutes } from './routes/casesRoutes';
-import { AuthRoutes } from './routes/authRoutes'
+import { indexRoutes } from './routes/indexRoutes';
+import { userRoutes } from './routes/userRoutes';
+import { casesRoutes } from './routes/casesRoutes';
+import { authRoutes } from './routes/authRoutes'
 
-let userRoutes = new UserRoutes();
-let casesRoutes = new CasesRoutes();
-let authRoutes = new AuthRoutes();
-let indexRoutes = new IndexRoutes();
 
 class Server {
     app: Application;

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import casoController from '../controllers/casesController'
+import { casesController } from '../controllers/casesController'
 
-export class CasesRoutes{
+export const casesRoutes = new class CasesRoutes{
     public router: Router = Router();
 
     constructor(){
@@ -9,15 +9,15 @@ export class CasesRoutes{
     }
 
     public config():void{
-        this.router.get('/', casoController.getCasos)
+        this.router.get('/', casesController.getCasos)
         
         //By case id
-        this.router.get('/id/:dato', casoController.getCasoById)
+        this.router.get('/id/:dato', casesController.getCasoById)
 
         //By user id
-        this.router.get('/user/:dato', casoController.getCasoByuserId)
+        this.router.get('/user/:dato', casesController.getCasoByuserId)
 
         //Update
-        this.router.post('/', casoController.addCaso)
+        this.router.post('/', casesController.addCaso)
     }
 };

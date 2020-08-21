@@ -1,7 +1,7 @@
-import {Request, Response}from 'express';
-import pool from '../database'
+import { Request, Response }from 'express';
+import { pool } from '../database'
 
-class CasoController{
+export const casesController = new class CasesController{
     public async getCasos(req:Request, res:Response){
         try {
             const response = await pool.query("Select * from casos")
@@ -81,6 +81,3 @@ class CasoController{
         const caso =  await pool.query("select * from casos where id ='"+req.body.id) 
     } 
 }
-
-const casoController = new CasoController()
-export default casoController

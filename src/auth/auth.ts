@@ -1,13 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
-import pool from '../database';
-import { HashingService } from './../services/hashing';
-import { JwtService } from './../services/jwt';
+import { Request, Response } from 'express';
+import { pool } from '../database';
+import { hashingService } from './../services/hashing';
+import { jwtService } from './../services/jwt';
 import { UserDto } from '../models/user';
 
-let hashingService = new HashingService();
-let jwtService = new JwtService();
-
-class AuthService{
+export const authService = new class AuthService{
 
     public async authService(req: Request, res: Response){
 
@@ -118,5 +115,3 @@ class AuthService{
         }
     }
 }
-
-export const authService = new AuthService()

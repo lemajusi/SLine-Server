@@ -2,15 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const indexController_1 = require("../controllers/indexController");
-let indexController = new indexController_1.IndexController();
-class IndexRoutes {
+exports.indexRoutes = new class IndexRoutes {
     constructor() {
         this.router = express_1.Router();
         this.config();
     }
     config() {
-        this.router.get('/', indexController.index);
+        this.router.get('/', indexController_1.indexController.index);
     }
-}
-exports.IndexRoutes = IndexRoutes;
-;
+};

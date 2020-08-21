@@ -1,7 +1,7 @@
 import { Request, Response, json } from 'express';
-import pool from '../database';
+import { pool } from '../database';
 
-class UserController {
+export const userController = new class UserController {
 
     public async getUsers(req: Request, res: Response) {
         try {
@@ -113,5 +113,3 @@ class UserController {
         }
     }
 };
-
-export const userController = new UserController();

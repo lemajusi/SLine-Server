@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = require("pg");
-const pool = new pg_1.Pool({
+exports.pool = new pg_1.Pool({
     // por url
     connectionString: 'postgresql://ui7o4inhdchnbwe1dvsq:gJc3wmZbYn3dvlZYs4h2@bn3lgqkqg589vkeh25nx-postgresql.services.clever-cloud.com:5432/bn3lgqkqg589vkeh25nx'
     // host web
@@ -16,4 +16,3 @@ const pool = new pg_1.Pool({
     // database: 'sline',
     // password: 'root',
 });
-exports.default = pool;

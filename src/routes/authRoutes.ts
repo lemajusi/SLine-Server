@@ -1,9 +1,7 @@
 import { Router } from 'express';
-import { AuthService } from '../auth/auth';
+import { authService } from '../auth/auth';
 
-let authService = new AuthService();
-
-export class AuthRoutes{
+export const authRoutes = new class AuthRoutes{
 
     public router: Router = Router();
 

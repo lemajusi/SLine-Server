@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 
-const pool = new Pool({
+export const pool = new Pool({
     // por url
     connectionString: 'postgresql://ui7o4inhdchnbwe1dvsq:gJc3wmZbYn3dvlZYs4h2@bn3lgqkqg589vkeh25nx-postgresql.services.clever-cloud.com:5432/bn3lgqkqg589vkeh25nx'
 
@@ -18,5 +18,3 @@ const pool = new Pool({
     // password: 'root',
 
 });
-
-export default pool;

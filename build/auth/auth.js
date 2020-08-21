@@ -8,27 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_1 = __importDefault(require("../database"));
+const database_1 = require("../database");
 const hashing_1 = require("./../services/hashing");
 const jwt_1 = require("./../services/jwt");
-let hashingService = new hashing_1.HashingService();
-let jwtService = new jwt_1.JwtService();
-class AuthService {
+exports.authService = new class AuthService {
     authService(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = req.body;
             try {
-                const response = yield database_1.default.query(`SELECT * FROM users WHERE email='${user.email}'`);
+                const response = yield database_1.pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
                 if (response.rowCount === 1 && response.rows[0]) {
                     let dbPass = response.rows[0].password;
-                    let match = yield hashingService.comparePasswords(user.password, dbPass).then(result => result);
+                    let match = yield hashing_1.hashingService.comparePasswords(user.password, dbPass).then(result => result);
                     if (match) {
                         let payload = { "sub": response.rows[0].id };
-                        let token = yield jwtService.createToken(payload).then(result => result);
+                        let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
                         res.send({
                             "status": 200,
                             "statusText": 'Ok',
@@ -55,10 +50,10 @@ class AuthService {
         return __awaiter(this, void 0, void 0, function* () {
             let user = req.body;
             try {
-                yield hashingService.hashPassword(user.password).then(result => {
+                yield hashing_1.hashingService.hashPassword(user.password).then(result => {
                     user.password = result;
                 });
-                const response = yield database_1.default.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
+                const response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
                 if (response.rowCount === 1) {
                     res.send({
                         status: 200,
@@ -105,7 +100,7 @@ class AuthService {
                     });
                 }
                 let token = (_a = req.header('authorization')) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
-                let payload = yield jwtService.decodeToken(token).then(res => res);
+                let payload = yield jwt_1.jwtService.decodeToken(token).then(res => res);
                 if (!payload) {
                     return res.send({
                         "status": 401,
@@ -120,5 +115,4 @@ class AuthService {
             }
         });
     }
-}
-exports.authService = new AuthService();
+};
