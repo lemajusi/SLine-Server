@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { IndexController } from '../controllers/indexcontroller';
+import { IndexController } from '../controllers/indexController';
 
 let indexController = new IndexController();
 
