@@ -1,9 +1,7 @@
 import { Router } from 'express';
-import { UserController } from '../controllers/usersController';
-import { AuthService } from './../auth/auth';
+import { userController } from '../controllers/usersController';
+import { authService } from './../auth/auth';
 
-let userController = new UserController();
-let authService = new AuthService();
 
 export class UserRoutes {
 
@@ -15,10 +13,10 @@ export class UserRoutes {
 
     config(): void {
         //Get users
-        this.router.get('/', authService.checkAuthenticated, userController.getUsers);
+        this.router.get('/', userController.getUsers);
      
         //Search by id
-        this.router.get('/id/:dato',userController.getUserById)
+        this.router.get('/id/:dato', userController.getUserById)
      
         //Delete
         this.router.delete('/dlt/:dato', userController.deleteUser)

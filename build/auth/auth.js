@@ -75,10 +75,13 @@ class AuthService {
                 if (error.constraint === 'users_username_key') {
                     err = 'Username is already in use';
                 }
-                else if (error.constraint === 'users_email_key') {
+                if (error.constraint === 'users_email_key') {
                     err = 'Email is already in use';
                 }
-                else if (err === '') {
+                if (error.message.code === 'ETIMEDOUT') {
+                    err = 'Time out';
+                }
+                if (err === '') {
                     err = 'Algun otro error';
                 }
                 res.send({
@@ -118,4 +121,4 @@ class AuthService {
         });
     }
 }
-exports.AuthService = AuthService;
+exports.authService = new AuthService();

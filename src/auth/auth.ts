@@ -7,7 +7,7 @@ import { UserDto } from '../models/user';
 let hashingService = new HashingService();
 let jwtService = new JwtService();
 
-export class AuthService{
+class AuthService{
 
     public async authService(req: Request, res: Response){
 
@@ -28,7 +28,7 @@ export class AuthService{
                         "status": 200,
                         "statusText": 'Ok',
                         "message": 'The username and password combination is correct!',
-                        "token": token 
+                        "token": token
                     });
                 }
 
@@ -69,9 +69,17 @@ export class AuthService{
 
             if (error.constraint === 'users_username_key'){
                 err = 'Username is already in use';
-            } else if (error.constraint === 'users_email_key'){
+            } 
+            
+            if (error.constraint === 'users_email_key'){
                 err = 'Email is already in use';
-            } else if ( err === '' ){
+            }
+
+            if (error.message.code === 'ETIMEDOUT') {
+                err = 'Time out';
+            }
+            
+            if ( err === '' ){
                 err = 'Algun otro error'
             }
             
@@ -110,3 +118,5 @@ export class AuthService{
         }
     }
 }
+
+export const authService = new AuthService()

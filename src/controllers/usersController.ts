@@ -1,10 +1,9 @@
 import { Request, Response, json } from 'express';
 import pool from '../database';
 
-export class UserController {
+class UserController {
 
     public async getUsers(req: Request, res: Response) {
-        console.log(req.body);
         try {
             const response = await pool.query('SELECT * FROM users');
             res.send({
@@ -114,3 +113,5 @@ export class UserController {
         }
     }
 };
+
+export const userController = new UserController();

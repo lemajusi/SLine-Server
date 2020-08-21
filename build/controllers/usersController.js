@@ -16,7 +16,6 @@ const database_1 = __importDefault(require("../database"));
 class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(req.body);
             try {
                 const response = yield database_1.default.query('SELECT * FROM users');
                 res.send({
@@ -135,5 +134,5 @@ class UserController {
         });
     }
 }
-exports.UserController = UserController;
 ;
+exports.userController = new UserController();
