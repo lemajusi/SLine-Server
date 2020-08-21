@@ -1,10 +1,10 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-    user: 'uphklycrv4jvhvqjjher',
-    host: 'bjmmne3jixgqyv36mzsg-postgresql.services.clever-cloud.com',
-    database: 'bjmmne3jixgqyv36mzsg',
-    password: 'PROJmgQt31Z4auSBaFou',
+    user: 'ui7o4inhdchnbwe1dvsq',
+    host: 'bn3lgqkqg589vkeh25nx-postgresql.services.clever-cloud.com',
+    database: 'bn3lgqkqg589vkeh25nx',
+    password: 'gJc3wmZbYn3dvlZYs4h2',
     port: 5432
 });
 
