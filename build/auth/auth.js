@@ -73,7 +73,7 @@ exports.authService = new class AuthService {
                 if (error.constraint === 'users_email_key') {
                     err = 'Email is already in use';
                 }
-                if (error.message.code === 'ETIMEDOUT') {
+                if (error.code === 'ETIMEDOUT') {
                     err = 'Time out';
                 }
                 if (err === '') {
@@ -88,7 +88,7 @@ exports.authService = new class AuthService {
         });
     }
     ;
-    checkAuthenticated(req, res) {
+    checkAuthenticated(req, res, next) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -108,7 +108,8 @@ exports.authService = new class AuthService {
                         "message": 'Missing Auth Invalid'
                     });
                 }
-                req.body.isAuth = true;
+                req.body.userId = payload.sub;
+                next();
             }
             catch (error) {
                 console.log(error);

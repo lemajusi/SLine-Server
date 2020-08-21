@@ -4,14 +4,24 @@ import { pool } from '../database';
 export const userController = new class UserController {
 
     public async getUsers(req: Request, res: Response) {
+        const userId = req.body.userId;
+        console.log(userId);
         try {
-            const response = await pool.query('SELECT * FROM users');
-            res.send({
-                status: 200,
-                statusText: 'OK',
-                message: 'Request Successfull',
-                data: response.rows
-            })
+            let response = await pool.query(`SELECT id FROM users WHERE id=${userId}`);
+
+            if(response.rowCount === 1 && response.rows[0].id === userId){
+                console.log(req.body)
+                response = await pool.query('SELECT username, email, fechanac, fecharegistro, sexo FROM users');
+
+                if(response.rows.length){
+                    res.send({
+                        status: 200,
+                        statusText: 'OK',
+                        message: 'Request Successfull',
+                        data: response.rows
+                    })
+                } throw new Error();
+            }
         } catch (error) {
             console.error(error);
             res.send({

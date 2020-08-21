@@ -13,14 +13,23 @@ const database_1 = require("../database");
 exports.userController = new class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const userId = req.body.userId;
+            console.log(userId);
             try {
-                const response = yield database_1.pool.query('SELECT * FROM users');
-                res.send({
-                    status: 200,
-                    statusText: 'OK',
-                    message: 'Request Successfull',
-                    data: response.rows
-                });
+                let response = yield database_1.pool.query(`SELECT id FROM users WHERE id=${userId}`);
+                if (response.rowCount === 1 && response.rows[0].id === userId) {
+                    console.log(req.body);
+                    response = yield database_1.pool.query('SELECT username, email, fechanac, fecharegistro, sexo FROM users');
+                    if (response.rows.length) {
+                        res.send({
+                            status: 200,
+                            statusText: 'OK',
+                            message: 'Request Successfull',
+                            data: response.rows
+                        });
+                    }
+                    throw new Error();
+                }
             }
             catch (error) {
                 console.error(error);

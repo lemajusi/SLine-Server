@@ -1,8 +1,9 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { pool } from '../database';
 import { hashingService } from './../services/hashing';
 import { jwtService } from './../services/jwt';
 import { UserDto } from '../models/user';
+import jwt from 'express-jwt';
 
 export const authService = new class AuthService{
 
@@ -72,7 +73,7 @@ export const authService = new class AuthService{
                 err = 'Email is already in use';
             }
 
-            if (error.message.code === 'ETIMEDOUT') {
+            if (error.code === 'ETIMEDOUT') {
                 err = 'Time out';
             }
             
@@ -88,7 +89,7 @@ export const authService = new class AuthService{
         }
     };
 
-    public async checkAuthenticated(req: Request, res: Response){
+    public async checkAuthenticated(req: Request, res: Response, next: NextFunction){
         try {
             if(!req.header('authorization')){
                 return res.send({
@@ -98,7 +99,7 @@ export const authService = new class AuthService{
                 });
             }
     
-            let token: any = req.header('authorization')?.split(' ')[1];
+            let token:any = req.header('authorization')?.split(' ')[1];
             let payload = await jwtService.decodeToken(token).then(res => res);
     
             if(!payload){
@@ -109,7 +110,9 @@ export const authService = new class AuthService{
                 });
             }
 
-            req.body.isAuth = true;
+            req.body.userId = payload.sub;
+
+            next();
         } catch (error) {
             console.log(error);
         }
