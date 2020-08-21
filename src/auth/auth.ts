@@ -96,7 +96,6 @@ export class AuthService{
             let token: any = req.header('authorization')?.split(' ')[1];
             let payload = await jwtService.decodeToken(token).then(res => res);
     
-    
             if(!payload){
                 return res.send({
                     "status": 401,
@@ -105,8 +104,7 @@ export class AuthService{
                 });
             }
 
-            req.body = payload;
-
+            req.body.isAuth = true;
         } catch (error) {
             console.log(error);
         }

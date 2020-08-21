@@ -4,6 +4,7 @@ import pool from '../database';
 export class UserController {
 
     public async getUsers(req: Request, res: Response) {
+        console.log(req.body);
         try {
             const response = await pool.query('SELECT * FROM users');
             res.send({

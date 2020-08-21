@@ -110,7 +110,7 @@ class AuthService {
                         "message": 'Missing Auth Invalid'
                     });
                 }
-                req.body = payload;
+                req.body.isAuth = true;
             }
             catch (error) {
                 console.log(error);

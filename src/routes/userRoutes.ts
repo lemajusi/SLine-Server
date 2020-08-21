@@ -15,7 +15,7 @@ export class UserRoutes {
 
     config(): void {
         //Get users
-        this.router.get('/', userController.getUsers);
+        this.router.get('/', authService.checkAuthenticated, userController.getUsers);
      
         //Search by id
         this.router.get('/id/:dato',userController.getUserById)
