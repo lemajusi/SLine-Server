@@ -1,8 +1,8 @@
 export interface UserDto{
-    "username": string;
+    "username"?: string;
     "email": string;
     "password": any;
-    "sexo": string;
+    "sexo"?: string;
     "fecharegistro"?: string;
     "fechanac"?: string;
     "id"?: number;

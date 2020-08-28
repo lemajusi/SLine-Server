@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../database");
 const hashing_1 = require("./../services/hashing");
 const jwt_1 = require("./../services/jwt");
+const authHandler_1 = require("./../handlers/authHandler");
 exports.authService = new class AuthService {
     authService(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -27,7 +28,7 @@ exports.authService = new class AuthService {
                         res.send({
                             "status": 200,
                             "statusText": 'Ok',
-                            "message": 'The username and password combination is correct!',
+                            "message": 'Nombre de usuario y contraseña correctos.',
                             "token": token
                         });
                     }
@@ -45,40 +46,32 @@ exports.authService = new class AuthService {
             ;
         });
     }
-    ;
     signUp(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            let user = req.body;
             try {
-                yield hashing_1.hashingService.hashPassword(user.password).then(result => {
-                    user.password = result;
-                });
-                const response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
-                if (response.rowCount === 1) {
-                    res.send({
-                        status: 200,
-                        statusMessage: 'Ok',
-                        text: 'User created successfully'
+                console.log(authHandler_1.authHandler.validateSignUp(req));
+                if (authHandler_1.authHandler.validateSignUp(req)) {
+                    let user = req.body;
+                    yield hashing_1.hashingService.hashPassword(user.password).then(result => {
+                        user.password = result;
                     });
+                    const response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
+                    if (response.rowCount === 1) {
+                        res.send({
+                            status: 200,
+                            statusMessage: 'Ok',
+                            message: 'Usuario creado exitosamente'
+                        });
+                    }
+                    else if (response.rowCount === 0)
+                        throw Error();
                 }
-                else if (response.rowCount === 0)
+                else if (!authHandler_1.authHandler.validateSignUp(req))
                     throw Error();
             }
             catch (error) {
-                let err = '';
+                let err = authHandler_1.authHandler.errorsSignUp(error);
                 console.log(error);
-                if (error.constraint === 'users_username_key') {
-                    err = 'Username is already in use';
-                }
-                if (error.constraint === 'users_email_key') {
-                    err = 'Email is already in use';
-                }
-                if (error.code === 'ETIMEDOUT') {
-                    err = 'Time out';
-                }
-                if (err === '') {
-                    err = 'Algun otro error';
-                }
                 res.send({
                     status: 403,
                     statusText: 'Internal error',
@@ -87,7 +80,6 @@ exports.authService = new class AuthService {
             }
         });
     }
-    ;
     checkAuthenticated(req, res, next) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
