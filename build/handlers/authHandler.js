@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.authHandler = void 0;
 let userModel;
 exports.authHandler = new class authHandler {
     constructor() {
