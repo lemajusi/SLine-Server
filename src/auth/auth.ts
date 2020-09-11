@@ -16,7 +16,9 @@ export const authService = new class AuthService{
             
             if(response.rowCount === 1 && response.rows[0]){
                 let dbPass: string = response.rows[0].password;
-                let match = await hashingService.comparePasswords(user.password, dbPass).then(result => result);
+                let match = await hashingService.comparePasswords(user.password, dbPass)
+                                .then(result => result)
+                                .catch(error => error);
 
                 if(match){
                     let payload = { "sub": response.rows[0].id }
@@ -28,44 +30,52 @@ export const authService = new class AuthService{
                         "message": 'Nombre de usuario y contraseña correctos.',
                         "token": token
                     });
-                }
+                } else if (!match) throw 'Password no coincide.'
 
-            } else if (response.rows.length === 0 && !response.rows[0]) throw new Error('Email y/o password no coinciden.');
+            } else if (response.rows.length === 0 && !response.rows[0]) throw 'Email y/o password no coinciden.';
             
         } catch (error) {
             
             res.send({
                 status: 500,
                 statusText: 'Internal error',
-                message: 'Email y/o password no coinciden.'
+                message: error
             });
         };
     }
 
     public async signUp(req: Request, res: Response){
         try {
-            console.log(authHandler.validateSignUp(req))
             if(authHandler.validateSignUp(req)){
                 let user: UserDto = req.body;
 
-                await hashingService.hashPassword(user.password).then(result => {
-                    user.password = result;
-                });
+                await hashingService.hashPassword(user.password)
+                    .then(result => user.password = result)
+                    .catch(error => error);
     
                 const response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
-    
+
                 if(response.rowCount === 1){
-                    res.send({
-                        status: 200,
-                        statusMessage: 'Ok',
-                        message: 'Usuario creado exitosamente'
-                    })
-                } else if (response.rowCount === 0) throw Error();
-            } else if(!authHandler.validateSignUp(req)) throw Error();
+                    const response = await pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
+
+                    if(response.rows[0]){
+                        let payload = { "sub": response.rows[0].id }
+                        let token = await jwtService.createToken(payload).then(result => result);
+
+                        res.send({
+                            status: 200,
+                            statusMessage: 'Ok',
+                            message: 'Usuario creado exitosamente',
+                            token: token
+                        });
+                    } else throw 'Error al crear token para el nuevo usuario';
+
+                } else throw 'Error al ingresar datos de usuario a la base de datos';
+
+            } else throw 'Faltan datos requeridos';
         
         } catch (error) {
             let err: string = authHandler.errorsSignUp(error);
-            console.log(error)
             res.send({
                 status: 403,
                 statusText: 'Internal error',
@@ -91,7 +101,7 @@ export const authService = new class AuthService{
                 return res.send({
                     "status": 401,
                     "statusText": 'Unauthorized',
-                    "message": 'Missing Auth Invalid'
+                    "message": 'No tiene carga util'
                 });
             }
 

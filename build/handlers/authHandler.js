@@ -21,6 +21,9 @@ exports.authHandler = new class authHandler {
             if (error.code === 'ETIMEDOUT') {
                 err = 'Time out';
             }
+            if (err === '') {
+                err = error;
+            }
             return err;
         };
     }

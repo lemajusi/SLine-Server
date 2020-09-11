@@ -9,5 +9,5 @@ exports.pool = new pg_1.Pool({
     // password: 'root',
     // database: 'sline',
     // port: 5432,
-    connectionTimeoutMillis: 2000,
+    connectionTimeoutMillis: 5000,
 });

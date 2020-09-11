@@ -22,7 +22,9 @@ exports.authService = new class AuthService {
                 const response = yield database_1.pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
                 if (response.rowCount === 1 && response.rows[0]) {
                     let dbPass = response.rows[0].password;
-                    let match = yield hashing_1.hashingService.comparePasswords(user.password, dbPass).then(result => result);
+                    let match = yield hashing_1.hashingService.comparePasswords(user.password, dbPass)
+                        .then(result => result)
+                        .catch(error => error);
                     if (match) {
                         let payload = { "sub": response.rows[0].id };
                         let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
@@ -33,15 +35,17 @@ exports.authService = new class AuthService {
                             "token": token
                         });
                     }
+                    else if (!match)
+                        throw 'Password no coincide.';
                 }
                 else if (response.rows.length === 0 && !response.rows[0])
-                    throw new Error('Email y/o password no coinciden.');
+                    throw 'Email y/o password no coinciden.';
             }
             catch (error) {
                 res.send({
                     status: 500,
                     statusText: 'Internal error',
-                    message: 'Email y/o password no coinciden.'
+                    message: error
                 });
             }
             ;
@@ -50,29 +54,35 @@ exports.authService = new class AuthService {
     signUp(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(authHandler_1.authHandler.validateSignUp(req));
                 if (authHandler_1.authHandler.validateSignUp(req)) {
                     let user = req.body;
-                    yield hashing_1.hashingService.hashPassword(user.password).then(result => {
-                        user.password = result;
-                    });
+                    yield hashing_1.hashingService.hashPassword(user.password)
+                        .then(result => user.password = result)
+                        .catch(error => error);
                     const response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
                     if (response.rowCount === 1) {
-                        res.send({
-                            status: 200,
-                            statusMessage: 'Ok',
-                            message: 'Usuario creado exitosamente'
-                        });
+                        const response = yield database_1.pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
+                        if (response.rows[0]) {
+                            let payload = { "sub": response.rows[0].id };
+                            let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
+                            res.send({
+                                status: 200,
+                                statusMessage: 'Ok',
+                                message: 'Usuario creado exitosamente',
+                                token: token
+                            });
+                        }
+                        else
+                            throw 'Error al crear token para el nuevo usuario';
                     }
-                    else if (response.rowCount === 0)
-                        throw Error();
+                    else
+                        throw 'Error al ingresar datos de usuario a la base de datos';
                 }
-                else if (!authHandler_1.authHandler.validateSignUp(req))
-                    throw Error();
+                else
+                    throw 'Faltan datos requeridos';
             }
             catch (error) {
                 let err = authHandler_1.authHandler.errorsSignUp(error);
-                console.log(error);
                 res.send({
                     status: 403,
                     statusText: 'Internal error',
@@ -98,7 +108,7 @@ exports.authService = new class AuthService {
                     return res.send({
                         "status": 401,
                         "statusText": 'Unauthorized',
-                        "message": 'Missing Auth Invalid'
+                        "message": 'No tiene carga util'
                     });
                 }
                 req.body.userId = payload.sub;

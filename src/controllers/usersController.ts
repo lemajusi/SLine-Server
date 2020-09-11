@@ -5,12 +5,10 @@ export const userController = new class UserController {
 
     public async getUsers(req: Request, res: Response) {
         const userId = req.body.userId;
-        console.log(userId);
         try {
             let response = await pool.query(`SELECT id FROM users WHERE id=${userId}`);
 
             if(response.rowCount === 1 && response.rows[0].id === userId){
-                console.log(req.body)
                 response = await pool.query('SELECT username, email, fechanac, fecharegistro, sexo FROM users');
 
                 if(response.rows.length){
@@ -20,10 +18,9 @@ export const userController = new class UserController {
                         message: 'Request Successfull',
                         data: response.rows
                     })
-                } throw new Error();
+                } throw 'No existen usuarios en la base de datos.';
             }
         } catch (error) {
-            console.error(error);
             res.send({
                 status: res.status,
                 statusText: res.statusMessage
