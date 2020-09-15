@@ -1,18 +1,23 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { UserDto } from '../models/user';
 
 let userModel: UserDto;
 
 export const authHandler = new class authHandler{
 
-    public validateSignUp = (req: Request): boolean => {
-        if(!req.body){
+    public validateBody = (userData: UserDto): boolean => {
+        if(!userData){
             return false;
         }
+
+        if(userData !== userModel){
+            return false;
+        }
+
         return true;
     }
 
-    public errorsSignUp = (error: any):string => {
+    public errorsChecker = (error: any):string => {
         let err = '';
         if (error.constraint === 'users_username_key'){
             err = 'Nombre de usuario ya esta en uso';

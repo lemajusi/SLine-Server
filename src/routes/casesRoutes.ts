@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { authService } from '../auth/auth';
 import { casesController } from '../controllers/casesController'
 
 export const casesRoutes = new class CasesRoutes{
@@ -18,6 +19,6 @@ export const casesRoutes = new class CasesRoutes{
         this.router.get('/user/:dato', casesController.getCasoByuserId)
 
         //Update
-        this.router.post('/add', casesController.addCaso)
+        this.router.post('/add', authService.checkAuthenticated, casesController.addCaso)
     }
 };

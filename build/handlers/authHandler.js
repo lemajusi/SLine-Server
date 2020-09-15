@@ -3,13 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 let userModel;
 exports.authHandler = new class authHandler {
     constructor() {
-        this.validateSignUp = (req) => {
-            if (!req.body) {
+        this.validateBody = (userData) => {
+            if (!userData) {
+                return false;
+            }
+            if (userData !== userModel) {
                 return false;
             }
             return true;
         };
-        this.errorsSignUp = (error) => {
+        this.errorsChecker = (error) => {
             let err = '';
             if (error.constraint === 'users_username_key') {
                 err = 'Nombre de usuario ya esta en uso';

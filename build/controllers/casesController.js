@@ -11,6 +11,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../database");
 exports.casesController = new class CasesController {
+    addCaso(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const caseData = req.body;
+                const userId = req.body.userId;
+                const response = yield database_1.pool.query(`INSERT INTO cases(coordenadas, titulo, descripcion, idusuario) values ('${caseData.coordenadas}', '${caseData.titulo}', '${caseData.descripcion}', ${userId});`);
+                if (response.rowCount === 1) {
+                    res.send({
+                        status: 200,
+                        message: 'Datos del caso ingresados correctamente.',
+                    });
+                }
+                else
+                    throw 'Error al ingresar datos del caso en la base de datos.';
+            }
+            catch (error) {
+                res.send({
+                    status: 403,
+                    statusText: 'Internal error',
+                    message: error
+                });
+            }
+        });
+    }
     getCasos(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -65,27 +89,6 @@ exports.casesController = new class CasesController {
                 res.send({
                     status: 403,
                     statusText: "Error",
-                });
-            }
-        });
-    }
-    addCaso(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const data = req.body;
-            try {
-                const response = yield database_1.pool.query(`INSERT INTO cases(coordenadas, titulo, descripcion, idusuario) values ('{"lat": ${data.coordenadas.lat}, "long": ${data.coordenadas.long}}', '${data.titulo}', '${data.descripcion}', ${data.idusuario});`);
-                if (response.rowCount === 1) {
-                    res.send({
-                        status: 200,
-                        message: 'Case created successfully',
-                    });
-                }
-            }
-            catch (error) {
-                res.send({
-                    status: 403,
-                    statusText: 'Internal error',
-                    message: error
                 });
             }
         });

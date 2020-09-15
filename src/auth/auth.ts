@@ -51,36 +51,34 @@ export const authService = new class AuthService{
 
     public async signUp(req: Request, res: Response){
         try {
-            if(authHandler.validateSignUp(req)){
-                let user: UserDto = req.body;
+            let user: UserDto = req.body;
 
-                await hashingService.hashPassword(user.password)
-                    .then(result => user.password = result)
-                    .catch(error => error);
+            await hashingService.hashPassword(user.password)
+                .then(result => user.password = result)
+                .catch(error => error);
     
-                const response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
+            const response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
 
-                if(response.rowCount === 1){
-                    let payload = { 
-                        "sub": response.rows[0].id,
-                        "username": response.rows[0].username,
-                        "email": response.rows[0].email,
-                        "rol": response.rows[0].rol,
-                        "fechaIngreso": response.rows[0].fecharegistro 
-                    }
-                    let token = await jwtService.createToken(payload).then(result => result);
+            if(response.rowCount === 1){
+                let payload = { 
+                    "sub": response.rows[0].id,
+                    "username": response.rows[0].username,
+                     "email": response.rows[0].email,
+                    "rol": response.rows[0].rol,
+                    "fechaIngreso": response.rows[0].fecharegistro 
+                }
+                let token = await jwtService.createToken(payload).then(result => result);
 
-                    res.send({
-                        status: 200,
-                        statusMessage: 'Ok',
-                        message: 'Usuario creado exitosamente',
-                        token: token
-                    })
-                } else if (response.rowCount === 0) throw Error();
-            } else if(!authHandler.validateSignUp(req)) throw Error();
+                 res.send({
+                    status: 200,
+                    statusMessage: 'Ok',
+                    message: 'Usuario creado exitosamente',
+                    token: token
+                })
+            } else if (response.rowCount === 0) throw Error();
         
         } catch (error) {
-            let err: string = authHandler.errorsSignUp(error);
+            let err: string = authHandler.errorsChecker(error);
             res.send({
                 status: 403,
                 statusText: 'Internal error',

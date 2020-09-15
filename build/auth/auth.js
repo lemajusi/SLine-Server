@@ -59,36 +59,32 @@ exports.authService = new class AuthService {
     signUp(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                if (authHandler_1.authHandler.validateSignUp(req)) {
-                    let user = req.body;
-                    yield hashing_1.hashingService.hashPassword(user.password)
-                        .then(result => user.password = result)
-                        .catch(error => error);
-                    const response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
-                    if (response.rowCount === 1) {
-                        let payload = {
-                            "sub": response.rows[0].id,
-                            "username": response.rows[0].username,
-                            "email": response.rows[0].email,
-                            "rol": response.rows[0].rol,
-                            "fechaIngreso": response.rows[0].fecharegistro
-                        };
-                        let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
-                        res.send({
-                            status: 200,
-                            statusMessage: 'Ok',
-                            message: 'Usuario creado exitosamente',
-                            token: token
-                        });
-                    }
-                    else if (response.rowCount === 0)
-                        throw Error();
+                let user = req.body;
+                yield hashing_1.hashingService.hashPassword(user.password)
+                    .then(result => user.password = result)
+                    .catch(error => error);
+                const response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
+                if (response.rowCount === 1) {
+                    let payload = {
+                        "sub": response.rows[0].id,
+                        "username": response.rows[0].username,
+                        "email": response.rows[0].email,
+                        "rol": response.rows[0].rol,
+                        "fechaIngreso": response.rows[0].fecharegistro
+                    };
+                    let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
+                    res.send({
+                        status: 200,
+                        statusMessage: 'Ok',
+                        message: 'Usuario creado exitosamente',
+                        token: token
+                    });
                 }
-                else if (!authHandler_1.authHandler.validateSignUp(req))
+                else if (response.rowCount === 0)
                     throw Error();
             }
             catch (error) {
-                let err = authHandler_1.authHandler.errorsSignUp(error);
+                let err = authHandler_1.authHandler.errorsChecker(error);
                 res.send({
                     status: 403,
                     statusText: 'Internal error',
