@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authService = void 0;
 const database_1 = require("../database");
 const hashing_1 = require("./../services/hashing");
 const jwt_1 = require("./../services/jwt");
@@ -24,7 +23,13 @@ exports.authService = new class AuthService {
                     let dbPass = response.rows[0].password;
                     let match = yield hashing_1.hashingService.comparePasswords(user.password, dbPass).then(result => result);
                     if (match) {
-                        let payload = { "sub": response.rows[0].id };
+                        let payload = {
+                            "sub": response.rows[0].id,
+                            "username": response.rows[0].username,
+                            "email": response.rows[0].email,
+                            "rol": response.rows[0].rol,
+                            "fechaIngreso": response.rows[0].fecharegistro
+                        };
                         let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
                         res.send({
                             "status": 200,
@@ -50,7 +55,6 @@ exports.authService = new class AuthService {
     signUp(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(authHandler_1.authHandler.validateSignUp(req));
                 if (authHandler_1.authHandler.validateSignUp(req)) {
                     let user = req.body;
                     yield hashing_1.hashingService.hashPassword(user.password).then(result => {
@@ -58,10 +62,19 @@ exports.authService = new class AuthService {
                     });
                     const response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
                     if (response.rowCount === 1) {
+                        let payload = {
+                            "sub": response.rows[0].id,
+                            "username": response.rows[0].username,
+                            "email": response.rows[0].email,
+                            "rol": response.rows[0].rol,
+                            "fechaIngreso": response.rows[0].fecharegistro
+                        };
+                        let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
                         res.send({
                             status: 200,
                             statusMessage: 'Ok',
-                            message: 'Usuario creado exitosamente'
+                            message: 'Usuario creado exitosamente',
+                            token: token
                         });
                     }
                     else if (response.rowCount === 0)
@@ -72,7 +85,6 @@ exports.authService = new class AuthService {
             }
             catch (error) {
                 let err = authHandler_1.authHandler.errorsSignUp(error);
-                console.log(error);
                 res.send({
                     status: 403,
                     statusText: 'Internal error',

@@ -19,7 +19,13 @@ export const authService = new class AuthService{
                 let match = await hashingService.comparePasswords(user.password, dbPass).then(result => result);
 
                 if(match){
-                    let payload = { "sub": response.rows[0].id }
+                    let payload = { 
+                        "sub": response.rows[0].id,
+                        "username": response.rows[0].username,
+                        "email": response.rows[0].email,
+                        "rol": response.rows[0].rol,
+                        "fechaIngreso": response.rows[0].fecharegistro 
+                    }
                     let token = await jwtService.createToken(payload).then(result => result);
 
                     res.send({
@@ -33,7 +39,6 @@ export const authService = new class AuthService{
             } else if (response.rows.length === 0 && !response.rows[0]) throw new Error('Email y/o password no coinciden.');
             
         } catch (error) {
-            
             res.send({
                 status: 500,
                 statusText: 'Internal error',
@@ -44,7 +49,6 @@ export const authService = new class AuthService{
 
     public async signUp(req: Request, res: Response){
         try {
-            console.log(authHandler.validateSignUp(req))
             if(authHandler.validateSignUp(req)){
                 let user: UserDto = req.body;
 
@@ -55,17 +59,26 @@ export const authService = new class AuthService{
                 const response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
     
                 if(response.rowCount === 1){
+                    let payload = { 
+                        "sub": response.rows[0].id,
+                        "username": response.rows[0].username,
+                        "email": response.rows[0].email,
+                        "rol": response.rows[0].rol,
+                        "fechaIngreso": response.rows[0].fecharegistro 
+                    }
+                    let token = await jwtService.createToken(payload).then(result => result);
+
                     res.send({
                         status: 200,
                         statusMessage: 'Ok',
-                        message: 'Usuario creado exitosamente'
+                        message: 'Usuario creado exitosamente',
+                        token: token
                     })
                 } else if (response.rowCount === 0) throw Error();
             } else if(!authHandler.validateSignUp(req)) throw Error();
         
         } catch (error) {
             let err: string = authHandler.errorsSignUp(error);
-            console.log(error)
             res.send({
                 status: 403,
                 statusText: 'Internal error',

@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.casesController = void 0;
 const database_1 = require("../database");
 exports.casesController = new class CasesController {
     getCasos(req, res) {
@@ -72,24 +71,21 @@ exports.casesController = new class CasesController {
     }
     addCaso(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const data = req.body;
             try {
-                const response = yield database_1.pool.query("insert into casos(titulo, descripcion, idusuario) values ('" +
-                    req.body.titulo + "','" +
-                    req.body.descripcion + "','" +
-                    req.body.idusaurio + "')");
-                res.send({
-                    status: 200,
-                    message: 'User created successfully',
-                });
+                const response = yield database_1.pool.query(`INSERT INTO cases(coordenadas, titulo, descripcion, idusuario) values ('{"lat": ${data.coordenadas.lat}, "long": ${data.coordenadas.long}}', '${data.titulo}', '${data.descripcion}', ${data.idusuario});`);
+                if (response.rowCount === 1) {
+                    res.send({
+                        status: 200,
+                        message: 'Case created successfully',
+                    });
+                }
             }
             catch (error) {
-                console.log(error);
-                console.log(req.body);
-                let err = undefined;
                 res.send({
                     status: 403,
-                    statusText: 'Error',
-                    message: err
+                    statusText: 'Internal error',
+                    message: error
                 });
             }
         });

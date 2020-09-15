@@ -18,6 +18,6 @@ export const casesRoutes = new class CasesRoutes{
         this.router.get('/user/:dato', casesController.getCasoByuserId)
 
         //Update
-        this.router.post('/', casesController.addCaso)
+        this.router.post('/add', casesController.addCaso)
     }
 };

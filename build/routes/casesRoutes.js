@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.casesRoutes = void 0;
 const express_1 = require("express");
 const casesController_1 = require("../controllers/casesController");
 exports.casesRoutes = new class CasesRoutes {
@@ -15,6 +14,6 @@ exports.casesRoutes = new class CasesRoutes {
         //By user id
         this.router.get('/user/:dato', casesController_1.casesController.getCasoByuserId);
         //Update
-        this.router.post('/', casesController_1.casesController.addCaso);
+        this.router.post('/add', casesController_1.casesController.addCaso);
     }
 };

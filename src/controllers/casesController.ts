@@ -19,6 +19,7 @@ export const casesController = new class CasesController{
             });
         }
     }
+
     public async getCasoById(req:Request, res:Response){
         try {
             const response = await pool.query("select * from casos where idcaso = '"+req.params.dato+"'")
@@ -35,6 +36,7 @@ export const casesController = new class CasesController{
             })
         }
     }
+
     public async getCasoByuserId(req:Request, res:Response){
         try {
             const response = await pool.query("select * from casos where idusuario = '"+req.params.dato+"'")
@@ -51,29 +53,25 @@ export const casesController = new class CasesController{
             })
         }
     }
-    public async addCaso(req:Request, res:Response){
-        try {
-            const response = await pool.query("insert into casos(titulo, descripcion, idusuario) values ('"+
-            req.body.titulo+"','"+
-            req.body.descripcion+"','"+
-            req.body.idusaurio+"')");
 
-            res.send({
-                status: 200,
-                message: 'User created successfully',
-            })
+    public async addCaso(req:Request, res:Response){
+        const data = req.body;
+
+        try {
+            const response = await pool.query(`INSERT INTO cases(coordenadas, titulo, descripcion, idusuario) values ('{"lat": ${data.coordenadas.lat}, "long": ${data.coordenadas.long}}', '${data.titulo}', '${data.descripcion}', ${data.idusuario});`);
+            
+            if(response.rowCount === 1){
+                res.send({
+                    status: 200,
+                    message: 'Case created successfully',
+                })
+            }
         
         } catch (error) {
-            console.log(error);
-
-            console.log(req.body)
-
-            let err = undefined;
-
             res.send({
                 status: 403,
-                statusText: 'Error',
-                message: err
+                statusText: 'Internal error',
+                message: error
             })
         }
     }

@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authHandler = void 0;
 let userModel;
 exports.authHandler = new class authHandler {
     constructor() {
@@ -17,9 +16,6 @@ exports.authHandler = new class authHandler {
             }
             if (error.constraint === 'users_email_key') {
                 return 'Correo electronico en uso';
-            }
-            if (error.code === 'ETIMEDOUT') {
-                err = 'Time out';
             }
             return err;
         };
