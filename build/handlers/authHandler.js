@@ -17,6 +17,12 @@ exports.authHandler = new class authHandler {
             if (error.constraint === 'users_email_key') {
                 return 'Correo electronico en uso';
             }
+            if (error.code === 'ETIMEDOUT') {
+                err = 'Time out';
+            }
+            if (err === '') {
+                err = error;
+            }
             return err;
         };
     }

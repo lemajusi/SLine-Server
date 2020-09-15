@@ -14,6 +14,6 @@ export const authRoutes = new class AuthRoutes{
         this.router.post('/signup', authService.signUp);
             
         //Login
-        this.router.post('/login', authService.authService)
+        this.router.post('/login', authService.authService);
     }
 }
