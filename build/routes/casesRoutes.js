@@ -9,7 +9,7 @@ exports.casesRoutes = new class CasesRoutes {
         this.config();
     }
     config() {
-        this.router.get('/', casesController_1.casesController.getCasos);
+        this.router.get('/', auth_1.authService.checkAuthenticated, casesController_1.casesController.getCases);
         //By case id
         this.router.get('/id/:dato', casesController_1.casesController.getCasoById);
         //By user id

@@ -26,20 +26,29 @@ export const casesController = new class CasesController{
         }
     }
 
-    public async getCasos(req:Request, res:Response){
+    public async getCases(req:Request, res:Response){
         try {
-            const response = await pool.query("Select * from casos")
-            res.send({
-                status: 200,
-                message: 'Request Successfull',
-                data: response.rows
-            });
+            const userId = req.body.userId;
+            let response = await pool.query(`SELECT id FROM users WHERE id = ${userId}`);
+            
+            if(response.rowCount === 1 && response.rows[0].id === userId){
+                response = await pool.query("SELECT * FROM cases")
+                
+                if(response.rows){
+                    res.send({
+                        status: 200,
+                        message: 'Request Successfull',
+                        data: response.rows
+                    });
+                } else throw 'No hay casos registrados';
+
+            } else throw 'No hay concidencia con la id de usuario';
+        
         } catch (error) {
-            console.log(error);
             res.send({
                 status: 403,
-                statusText: "error",
-                message: "Can't Get"
+                statusText: "Internal error",
+                message: error
             });
         }
     }

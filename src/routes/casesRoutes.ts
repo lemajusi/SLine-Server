@@ -10,7 +10,7 @@ export const casesRoutes = new class CasesRoutes{
     }
 
     public config():void{
-        this.router.get('/', casesController.getCasos)
+        this.router.get('/', authService.checkAuthenticated ,casesController.getCases)
         
         //By case id
         this.router.get('/id/:dato', casesController.getCasoById)

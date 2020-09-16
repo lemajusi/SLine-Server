@@ -35,22 +35,31 @@ exports.casesController = new class CasesController {
             }
         });
     }
-    getCasos(req, res) {
+    getCases(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield database_1.pool.query("Select * from casos");
-                res.send({
-                    status: 200,
-                    message: 'Request Successfull',
-                    data: response.rows
-                });
+                const userId = req.body.userId;
+                let response = yield database_1.pool.query(`SELECT id FROM users WHERE id = ${userId}`);
+                if (response.rowCount === 1 && response.rows[0].id === userId) {
+                    response = yield database_1.pool.query("SELECT * FROM cases");
+                    if (response.rows) {
+                        res.send({
+                            status: 200,
+                            message: 'Request Successfull',
+                            data: response.rows
+                        });
+                    }
+                    else
+                        throw 'No hay casos registrados';
+                }
+                else
+                    throw 'No hay concidencia con la id de usuario';
             }
             catch (error) {
-                console.log(error);
                 res.send({
                     status: 403,
-                    statusText: "error",
-                    message: "Can't Get"
+                    statusText: "Internal error",
+                    message: error
                 });
             }
         });
