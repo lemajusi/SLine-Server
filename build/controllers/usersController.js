@@ -15,10 +15,18 @@ exports.userController = new class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const userId = req.body.userId;
+<<<<<<< HEAD
             console.log("hoila");
             try {
                 let response = yield database_1.pool.query(`SELECT id FROM users WHERE id=${userId}`);
                 if (response.rowCount === 1 && response.rows[0].id === userId) {
+=======
+            console.log(userId);
+            try {
+                let response = yield database_1.pool.query(`SELECT id FROM users WHERE id=${userId}`);
+                if (response.rowCount === 1 && response.rows[0].id === userId) {
+                    console.log(req.body);
+>>>>>>> master
                     response = yield database_1.pool.query('SELECT username, email, fechanac, fecharegistro, sexo FROM users');
                     if (response.rows.length) {
                         res.send({
@@ -28,10 +36,18 @@ exports.userController = new class UserController {
                             data: response.rows
                         });
                     }
+<<<<<<< HEAD
                     throw 'No existen usuarios en la base de datos.';
                 }
             }
             catch (error) {
+=======
+                    throw new Error();
+                }
+            }
+            catch (error) {
+                console.error(error);
+>>>>>>> master
                 res.send({
                     status: res.status,
                     statusText: res.statusMessage

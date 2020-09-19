@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.casesController = void 0;
 const database_1 = require("../database");
 exports.casesController = new class CasesController {
+<<<<<<< HEAD
     addCaso(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -32,10 +33,29 @@ exports.casesController = new class CasesController {
                     status: 403,
                     statusText: 'Internal error',
                     message: error
+=======
+    getCasos(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield database_1.pool.query("Select * from casos");
+                res.send({
+                    status: 200,
+                    message: 'Request Successfull',
+                    data: response.rows
+                });
+            }
+            catch (error) {
+                console.log(error);
+                res.send({
+                    status: 403,
+                    statusText: "error",
+                    message: "Can't Get"
+>>>>>>> master
                 });
             }
         });
     }
+<<<<<<< HEAD
     getCases(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -61,10 +81,7 @@ exports.casesController = new class CasesController {
                     status: 403,
                     statusText: "Internal error",
                     message: error
-                });
-            }
-        });
-    }
+=======
     getCasoById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -80,14 +97,22 @@ exports.casesController = new class CasesController {
                 res.send({
                     status: 403,
                     statusText: "Error",
+>>>>>>> master
                 });
             }
         });
     }
+<<<<<<< HEAD
+    getCasoById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield database_1.pool.query("select * from casos where idcaso = '" + req.params.dato + "'");
+=======
     getCasoByuserId(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const response = yield database_1.pool.query("select * from casos where idusuario = '" + req.params.dato + "'");
+>>>>>>> master
                 res.send({
                     status: 200,
                     message: 'Request Successfull',
@@ -99,6 +124,47 @@ exports.casesController = new class CasesController {
                 res.send({
                     status: 403,
                     statusText: "Error",
+                });
+            }
+        });
+    }
+<<<<<<< HEAD
+    getCasoByuserId(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield database_1.pool.query("select * from casos where idusuario = '" + req.params.dato + "'");
+                res.send({
+                    status: 200,
+                    message: 'Request Successfull',
+                    data: response.rows
+=======
+    addCaso(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const response = yield database_1.pool.query("insert into casos(titulo, descripcion, idusuario) values ('" +
+                    req.body.titulo + "','" +
+                    req.body.descripcion + "','" +
+                    req.body.idusaurio + "')");
+                res.send({
+                    status: 200,
+                    message: 'User created successfully',
+>>>>>>> master
+                });
+            }
+            catch (error) {
+                console.log(error);
+<<<<<<< HEAD
+                res.send({
+                    status: 403,
+                    statusText: "Error",
+=======
+                console.log(req.body);
+                let err = undefined;
+                res.send({
+                    status: 403,
+                    statusText: 'Error',
+                    message: err
+>>>>>>> master
                 });
             }
         });
