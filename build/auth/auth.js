@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.authService = void 0;
 const database_1 = require("../database");
 const hashing_1 = require("./../services/hashing");
 const jwt_1 = require("./../services/jwt");
@@ -97,6 +98,7 @@ exports.authService = new class AuthService {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log(req.header);
                 if (!req.header('authorization')) {
                     return res.send({
                         "status": 401,

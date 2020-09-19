@@ -9,11 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.userController = void 0;
 const database_1 = require("../database");
 exports.userController = new class UserController {
     getUsers(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const userId = req.body.userId;
+            console.log("hoila");
             try {
                 let response = yield database_1.pool.query(`SELECT id FROM users WHERE id=${userId}`);
                 if (response.rowCount === 1 && response.rows[0].id === userId) {

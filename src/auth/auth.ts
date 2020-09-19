@@ -89,6 +89,7 @@ export const authService = new class AuthService{
 
     public async checkAuthenticated(req: Request, res: Response, next: NextFunction){
         try {
+            console.log(req.header)
             if(!req.header('authorization')){
                 return res.send({
                     "status": 401,
