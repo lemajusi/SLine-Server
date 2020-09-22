@@ -5,6 +5,7 @@ export const userController = new class UserController {
 
     public async getUsers(req: Request, res: Response) {
         const userId = req.body.userId;
+        console.log("hoila")
         try {
             let response = await pool.query(`SELECT id FROM users WHERE id=${userId}`);
 
