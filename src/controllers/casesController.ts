@@ -4,12 +4,12 @@ import { CaseDto } from '../models/case';
 
 export const casesController = new class CasesController{
 
-    public async addCaso(req:Request, res:Response){
+    public async addCase(req:Request, res:Response){
         try {
             const caseData: CaseDto = req.body;
             const userId: number = req.body.userId;
             
-            const response = await pool.query(`INSERT INTO cases(coordenadas, titulo, descripcion, idusuario) values ('${caseData.coordenadas}', '${caseData.titulo}', '${caseData.descripcion}', ${userId});`);
+            const response = await pool.query(`INSERT INTO cases(coordenadas, descripcion, idusuario) values ('${caseData.coordenadas}', '${caseData.descripcion}', ${userId});`);
             
             if(response.rowCount === 1){
                 res.send({
@@ -32,7 +32,7 @@ export const casesController = new class CasesController{
             let response = await pool.query(`SELECT id FROM users WHERE id = ${userId}`);
             
             if(response.rowCount === 1 && response.rows[0].id === userId){
-                response = await pool.query("SELECT * FROM cases")
+                response = await pool.query(`SELECT c.*, u.username, u.id FROM cases c INNER JOIN users u ON c.idusuario = u.id`)
                 
                 if(response.rows){
                     res.send({

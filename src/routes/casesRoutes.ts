@@ -19,6 +19,6 @@ export const casesRoutes = new class CasesRoutes{
         this.router.get('/user/:dato', casesController.getCasoByuserId)
 
         //Update
-        this.router.post('/add', authService.checkAuthenticated, casesController.addCaso)
+        this.router.post('/add', authService.checkAuthenticated, casesController.addCase)
     }
 };

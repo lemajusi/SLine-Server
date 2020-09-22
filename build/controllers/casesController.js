@@ -11,12 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../database");
 exports.casesController = new class CasesController {
-    addCaso(req, res) {
+    addCase(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const caseData = req.body;
                 const userId = req.body.userId;
-                const response = yield database_1.pool.query(`INSERT INTO cases(coordenadas, titulo, descripcion, idusuario) values ('${caseData.coordenadas}', '${caseData.titulo}', '${caseData.descripcion}', ${userId});`);
+                const response = yield database_1.pool.query(`INSERT INTO cases(coordenadas, descripcion, idusuario) values ('${caseData.coordenadas}', '${caseData.descripcion}', ${userId});`);
                 if (response.rowCount === 1) {
                     res.send({
                         status: 200,
@@ -41,7 +41,7 @@ exports.casesController = new class CasesController {
                 const userId = req.body.userId;
                 let response = yield database_1.pool.query(`SELECT id FROM users WHERE id = ${userId}`);
                 if (response.rowCount === 1 && response.rows[0].id === userId) {
-                    response = yield database_1.pool.query("SELECT * FROM cases");
+                    response = yield database_1.pool.query(`SELECT c.*, u.username, u.id FROM cases c INNER JOIN users u ON c.idusuario = u.id`);
                     if (response.rows) {
                         res.send({
                             status: 200,
