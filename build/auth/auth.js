@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authService = void 0;
 const database_1 = require("../database");
 const hashing_1 = require("./../services/hashing");
 const jwt_1 = require("./../services/jwt");
@@ -22,7 +21,6 @@ exports.authService = new class AuthService {
                 const response = yield database_1.pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
                 if (response.rowCount === 1 && response.rows[0]) {
                     let dbPass = response.rows[0].password;
-<<<<<<< HEAD
                     let match = yield hashing_1.hashingService.comparePasswords(user.password, dbPass)
                         .then(result => result)
                         .catch(error => error);
@@ -34,11 +32,6 @@ exports.authService = new class AuthService {
                             "rol": response.rows[0].rol,
                             "fechaIngreso": response.rows[0].fecharegistro
                         };
-=======
-                    let match = yield hashing_1.hashingService.comparePasswords(user.password, dbPass).then(result => result);
-                    if (match) {
-                        let payload = { "sub": response.rows[0].id };
->>>>>>> master
                         let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
                         res.send({
                             "status": 200,
@@ -47,27 +40,17 @@ exports.authService = new class AuthService {
                             "token": token
                         });
                     }
-<<<<<<< HEAD
                     else if (!match)
                         throw 'Password no coincide.';
                 }
                 else if (response.rows.length === 0 && !response.rows[0])
                     throw 'Email y/o password no coinciden.';
-=======
-                }
-                else if (response.rows.length === 0 && !response.rows[0])
-                    throw new Error('Email y/o password no coinciden.');
->>>>>>> master
             }
             catch (error) {
                 res.send({
                     status: 500,
                     statusText: 'Internal error',
-<<<<<<< HEAD
                     message: error
-=======
-                    message: 'Email y/o password no coinciden.'
->>>>>>> master
                 });
             }
             ;
@@ -76,7 +59,6 @@ exports.authService = new class AuthService {
     signUp(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-<<<<<<< HEAD
                 let user = req.body;
                 yield hashing_1.hashingService.hashPassword(user.password)
                     .then(result => user.password = result)
@@ -103,31 +85,6 @@ exports.authService = new class AuthService {
             }
             catch (error) {
                 let err = authHandler_1.authHandler.errorsChecker(error);
-=======
-                console.log(authHandler_1.authHandler.validateSignUp(req));
-                if (authHandler_1.authHandler.validateSignUp(req)) {
-                    let user = req.body;
-                    yield hashing_1.hashingService.hashPassword(user.password).then(result => {
-                        user.password = result;
-                    });
-                    const response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
-                    if (response.rowCount === 1) {
-                        res.send({
-                            status: 200,
-                            statusMessage: 'Ok',
-                            message: 'Usuario creado exitosamente'
-                        });
-                    }
-                    else if (response.rowCount === 0)
-                        throw Error();
-                }
-                else if (!authHandler_1.authHandler.validateSignUp(req))
-                    throw Error();
-            }
-            catch (error) {
-                let err = authHandler_1.authHandler.errorsSignUp(error);
-                console.log(error);
->>>>>>> master
                 res.send({
                     status: 403,
                     statusText: 'Internal error',
@@ -140,10 +97,7 @@ exports.authService = new class AuthService {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
-<<<<<<< HEAD
                 console.log(req.header);
-=======
->>>>>>> master
                 if (!req.header('authorization')) {
                     return res.send({
                         "status": 401,
@@ -157,11 +111,7 @@ exports.authService = new class AuthService {
                     return res.send({
                         "status": 401,
                         "statusText": 'Unauthorized',
-<<<<<<< HEAD
                         "message": 'No tiene carga util'
-=======
-                        "message": 'Missing Auth Invalid'
->>>>>>> master
                     });
                 }
                 req.body.userId = payload.sub;
