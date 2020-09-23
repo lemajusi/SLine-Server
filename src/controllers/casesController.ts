@@ -9,7 +9,7 @@ export const casesController = new class CasesController{
             const caseData: CaseDto = req.body;
             const userId: number = req.body.userId;
             
-            const response = await pool.query(`INSERT INTO cases(coordenadas, descripcion, idusuario) values ('${caseData.coordenadas}', '${caseData.descripcion}', ${userId});`);
+            const response = await pool.query(`INSERT INTO cases(lat, lng, descripcion, idusuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', ${userId});`);
             
             if(response.rowCount === 1){
                 res.send({

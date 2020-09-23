@@ -16,7 +16,7 @@ exports.casesController = new class CasesController {
             try {
                 const caseData = req.body;
                 const userId = req.body.userId;
-                const response = yield database_1.pool.query(`INSERT INTO cases(coordenadas, descripcion, idusuario) values ('${caseData.coordenadas}', '${caseData.descripcion}', ${userId});`);
+                const response = yield database_1.pool.query(`INSERT INTO cases(lat, lng, descripcion, idusuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', ${userId});`);
                 if (response.rowCount === 1) {
                     res.send({
                         status: 200,

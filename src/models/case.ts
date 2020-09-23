@@ -1,7 +1,9 @@
 export interface CaseDto{
-    "id"?: number;
-    "coordenadas": {"lat": number, "long": number};
-    "titulo": string;
+    "idCaso"?: number;
+    "lat": number;
+    "lng": number;
     "descripcion": string;
-    "idUsuario": number;
+    "idUsuario"?: number;
+    "fechaRegistro"?: string;
+    "verified"?: boolean;
 }
