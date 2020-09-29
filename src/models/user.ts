@@ -3,6 +3,7 @@ export interface UserDto{
     "email": string;
     "password": any;
     "sexo"?: string;
+    "rol"?: string;
     "fecharegistro"?: string;
     "fechanac"?: string;
     "id"?: number;

@@ -9,7 +9,7 @@ export const authService = new class AuthService{
 
     public async authService(req: Request, res: Response){
 
-        const user: UserDto = req.body;
+        let user: UserDto = req.body;
 
         try {
             const response = await pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
@@ -21,12 +21,13 @@ export const authService = new class AuthService{
                                 .catch(error => error);
 
                 if(match){
+                    user = response.rows[0];    
                     let payload = { 
-                        "sub": response.rows[0].id,
-                        "username": response.rows[0].username,
-                        "email": response.rows[0].email,
-                        "rol": response.rows[0].rol,
-                        "fechaIngreso": response.rows[0].fecharegistro 
+                        "sub": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "rol": user.rol,
+                        "fechaIngreso": user.fecharegistro 
                     }
                     let token = await jwtService.createToken(payload).then(result => result);
 
@@ -36,9 +37,8 @@ export const authService = new class AuthService{
                         "message": 'Nombre de usuario y contraseña correctos.',
                         "token": token
                     });
-                } else if (!match) throw 'Password no coincide.'
-
-            } else if (response.rows.length === 0 && !response.rows[0]) throw 'Email y/o password no coinciden.';
+                } else throw 'Password no coincide.'
+            } else throw 'Email y/o password no coinciden.';
             
         } catch (error) {
             res.send({
@@ -56,16 +56,20 @@ export const authService = new class AuthService{
             await hashingService.hashPassword(user.password)
                 .then(result => user.password = result)
                 .catch(error => error);
-    
-            const response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
+            
+            let response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
 
             if(response.rowCount === 1){
+              response = await pool.query(`SELECT id, email, username, rol, fecharegistro FROM users WHERE email='${user.email}'`);
+              
+              if(response.rowCount === 1){
+                user = response.rows[0];    
                 let payload = { 
-                    "sub": response.rows[0].id,
-                    "username": response.rows[0].username,
-                     "email": response.rows[0].email,
-                    "rol": response.rows[0].rol,
-                    "fechaIngreso": response.rows[0].fecharegistro 
+                    "sub": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "rol": user.rol,
+                    "fechaIngreso": user.fecharegistro 
                 }
                 let token = await jwtService.createToken(payload).then(result => result);
 
@@ -75,7 +79,8 @@ export const authService = new class AuthService{
                     message: 'Usuario creado exitosamente',
                     token: token
                 })
-            } else if (response.rowCount === 0) throw Error();
+              } else throw Error();
+            } else throw Error();
         
         } catch (error) {
             let err: string = authHandler.errorsChecker(error);

@@ -16,7 +16,7 @@ const authHandler_1 = require("./../handlers/authHandler");
 exports.authService = new class AuthService {
     authService(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = req.body;
+            let user = req.body;
             try {
                 const response = yield database_1.pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
                 if (response.rowCount === 1 && response.rows[0]) {
@@ -25,12 +25,13 @@ exports.authService = new class AuthService {
                         .then(result => result)
                         .catch(error => error);
                     if (match) {
+                        user = response.rows[0];
                         let payload = {
-                            "sub": response.rows[0].id,
-                            "username": response.rows[0].username,
-                            "email": response.rows[0].email,
-                            "rol": response.rows[0].rol,
-                            "fechaIngreso": response.rows[0].fecharegistro
+                            "sub": user.id,
+                            "username": user.username,
+                            "email": user.email,
+                            "rol": user.rol,
+                            "fechaIngreso": user.fecharegistro
                         };
                         let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
                         res.send({
@@ -40,10 +41,10 @@ exports.authService = new class AuthService {
                             "token": token
                         });
                     }
-                    else if (!match)
+                    else
                         throw 'Password no coincide.';
                 }
-                else if (response.rows.length === 0 && !response.rows[0])
+                else
                     throw 'Email y/o password no coinciden.';
             }
             catch (error) {
@@ -63,24 +64,30 @@ exports.authService = new class AuthService {
                 yield hashing_1.hashingService.hashPassword(user.password)
                     .then(result => user.password = result)
                     .catch(error => error);
-                const response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
+                let response = yield database_1.pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
                 if (response.rowCount === 1) {
-                    let payload = {
-                        "sub": response.rows[0].id,
-                        "username": response.rows[0].username,
-                        "email": response.rows[0].email,
-                        "rol": response.rows[0].rol,
-                        "fechaIngreso": response.rows[0].fecharegistro
-                    };
-                    let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
-                    res.send({
-                        status: 200,
-                        statusMessage: 'Ok',
-                        message: 'Usuario creado exitosamente',
-                        token: token
-                    });
+                    response = yield database_1.pool.query(`SELECT id, email, username, rol, fecharegistro FROM users WHERE email='${user.email}'`);
+                    if (response.rowCount === 1) {
+                        user = response.rows[0];
+                        let payload = {
+                            "sub": user.id,
+                            "username": user.username,
+                            "email": user.email,
+                            "rol": user.rol,
+                            "fechaIngreso": user.fecharegistro
+                        };
+                        let token = yield jwt_1.jwtService.createToken(payload).then(result => result);
+                        res.send({
+                            status: 200,
+                            statusMessage: 'Ok',
+                            message: 'Usuario creado exitosamente',
+                            token: token
+                        });
+                    }
+                    else
+                        throw Error();
                 }
-                else if (response.rowCount === 0)
+                else
                     throw Error();
             }
             catch (error) {
