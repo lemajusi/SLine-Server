@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.casesController = void 0;
 const database_1 = require("../database");
 exports.casesController = new class CasesController {
     addCase(req, res) {
@@ -17,8 +16,9 @@ exports.casesController = new class CasesController {
             try {
                 const caseData = req.body;
                 const userId = req.body.userId;
-                const response = yield database_1.pool.query(`INSERT INTO cases(lat, lng, descripcion, idusuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', ${userId});`);
+                const response = yield database_1.pool.query(`INSERT INTO cases(lat, lng, descripcion, tipoviolencia, idusuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', '${caseData.tipoViolencia}', ${userId});`);
                 if (response.rowCount === 1) {
+                    console.log(response);
                     res.send({
                         status: 200,
                         message: 'Datos del caso ingresados correctamente.',
@@ -28,6 +28,7 @@ exports.casesController = new class CasesController {
                     throw 'Error al ingresar datos del caso en la base de datos.';
             }
             catch (error) {
+                console.log(error);
                 res.send({
                     status: 403,
                     statusText: 'Internal error',

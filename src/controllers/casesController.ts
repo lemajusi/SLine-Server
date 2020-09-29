@@ -9,15 +9,17 @@ export const casesController = new class CasesController{
             const caseData: CaseDto = req.body;
             const userId: number = req.body.userId;
             
-            const response = await pool.query(`INSERT INTO cases(lat, lng, descripcion, idusuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', ${userId});`);
+            const response = await pool.query(`INSERT INTO cases(lat, lng, descripcion, tipoviolencia, idusuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', '${caseData.tipoViolencia}', ${userId});`);
             
             if(response.rowCount === 1){
+                console.log(response)
                 res.send({
                     status: 200,
                     message: 'Datos del caso ingresados correctamente.',
                 })
             } else throw 'Error al ingresar datos del caso en la base de datos.'
         } catch (error) {
+            console.log(error)
             res.send({
                 status: 403,
                 statusText: 'Internal error',

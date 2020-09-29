@@ -3,6 +3,7 @@ export interface CaseDto{
     "lat": number;
     "lng": number;
     "descripcion": string;
+    "tipoViolencia": string;
     "idUsuario"?: number;
     "fechaRegistro"?: string;
     "verified"?: boolean;
