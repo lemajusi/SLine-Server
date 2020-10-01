@@ -6,21 +6,20 @@ export const casesController = new class CasesController{
 
     public async addCase(req:Request, res:Response){
         try {
-            let caseData: CaseDto = req.body;
-            caseData.id_usuario = req.body.userId;
-
-            const response = await pool.query(`INSERT INTO cases(lat, lng, descripcion, tipo_violencia, id_usuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', '${caseData.tipo_violencia}', ${caseData.id_usuario});`);
+            const caseData: CaseDto = req.body;
+            const userId: number = req.body.userId;
+            
+            const response = await pool.query(`INSERT INTO cases(lat, lng, descripcion, tipoviolencia, idusuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', '${caseData.tipoViolencia}', ${userId});`);
             
             if(response.rowCount === 1){
                 console.log(response)
                 res.send({
-                    status: 201,
-                    statusText: 'Created',
+                    status: 200,
                     message: 'Datos del caso ingresados correctamente.',
                 })
             } else throw 'Error al ingresar datos del caso en la base de datos.'
         } catch (error) {
-            console.log(error);
+            console.log(error)
             res.send({
                 status: 403,
                 statusText: 'Internal error',
@@ -35,20 +34,19 @@ export const casesController = new class CasesController{
             let response = await pool.query(`SELECT id FROM users WHERE id = ${userId}`);
             
             if(response.rowCount === 1 && response.rows[0].id === userId){
-                response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verified, c.lat, c.lng, c.tipo_violencia, c.id_usuario, u.username FROM cases c INNER JOIN users u ON c.id_usuario = u.id`)
-            
+                response = await pool.query(`SELECT c.*, u.username, u.id FROM cases c INNER JOIN users u ON c.idusuario = u.id`)
+                
                 if(response.rows){
                     res.send({
                         status: 200,
-                        message: 'Request Successfully',
+                        message: 'Request Successfull',
                         data: response.rows
                     });
                 } else throw 'No hay casos registrados';
 
-            } else throw 'No hay concidencia de usuario';
+            } else throw 'No hay concidencia con la id de usuario';
         
         } catch (error) {
-            console.log(error)
             res.send({
                 status: 403,
                 statusText: "Internal error",
@@ -57,25 +55,19 @@ export const casesController = new class CasesController{
         }
     }
 
-    public async getCaseById(req:Request, res:Response){
+    public async getCasoById(req:Request, res:Response){
         try {
-            let userId = +req.body.userId;
-            let caseId = +req.params.id;
-            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verified, c.lat, c.lng, c.tipo_violencia, c.id_usuario FROM cases c WHERE c.id_caso=${caseId} AND c.id_usuario=${userId}`)
-            
-            if(response.rows[0]){
-                res.send({
-                    status: 200,
-                    message: 'Request Successfull',
-                    data: response.rows
-                })
-            } else throw Error();
-        
+            const response = await pool.query("select * from casos where idcaso = '"+req.params.dato+"'")
+            res.send({
+                status: 200,
+                message: 'Request Successfull',
+                data: response.rows
+            })
         } catch (error) {
+            console.log(error)
             res.send({
                 status: 403,
                 statusText: "Error",
-                message: error
             })
         }
     }

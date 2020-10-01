@@ -1,10 +1,10 @@
 export interface CaseDto{
-    "id_caso"?: number;
+    "idCaso"?: number;
     "lat": number;
     "lng": number;
     "descripcion": string;
-    "tipo_violencia": string;
-    "id_usuario"?: number;
-    "fecha_registro"?: string;
+    "tipoViolencia": string;
+    "idUsuario"?: number;
+    "fechaRegistro"?: string;
     "verified"?: boolean;
 }

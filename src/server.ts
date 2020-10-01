@@ -31,6 +31,7 @@ class Server {
         this.app.use('/users', userRoutes.router);
         this.app.use('/cases', casesRoutes.router);
         this.app.use('/auth', authRoutes.router);
+
     }
 
     start():void{
