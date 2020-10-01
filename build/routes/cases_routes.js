@@ -1,25 +1,20 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.casesRoutes = void 0;
 const express_1 = require("express");
-const casesController_1 = __importDefault(require("../controllers/casesController"));
-class CasesRoutes {
+const auth_1 = require("../auth/auth");
+const cases_controller_1 = require("../controllers/cases_controller");
+exports.casesRoutes = new class CasesRoutes {
     constructor() {
         this.router = express_1.Router();
         this.config();
     }
     config() {
-        this.router.get('/', casesController_1.default.getCasos);
+        this.router.get('/', auth_1.authService.checkAuthenticated, cases_controller_1.casesController.getCases);
         //By case id
-        this.router.get('/id/:dato', casesController_1.default.getCasoById);
+        this.router.get('/id/:dato', cases_controller_1.casesController.getCasoById);
         //By user id
-        this.router.get('/user/:dato', casesController_1.default.getCasoByuserId);
+        this.router.get('/user/:dato', cases_controller_1.casesController.getCasoByuserId);
         //Update
-        this.router.post('/', casesController_1.default.addCaso);
+        this.router.post('/add', auth_1.authService.checkAuthenticated, cases_controller_1.casesController.addCase);
     }
-}
-exports.CasesRoutes = CasesRoutes;
-;
+};

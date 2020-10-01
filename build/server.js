@@ -6,10 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
-const indexRoutes_1 = require("./routes/indexRoutes");
-const userRoutes_1 = require("./routes/userRoutes");
-const casesRoutes_1 = require("./routes/casesRoutes");
-const authRoutes_1 = require("./routes/authRoutes");
+const index_routes_1 = require("./routes/index_routes");
+const user_routes_1 = require("./routes/user_routes");
+const cases_routes_1 = require("./routes/cases_routes");
+const auth_routes_1 = require("./routes/auth_routes");
 class Server {
     constructor() {
         this.app = express_1.default();
@@ -25,10 +25,10 @@ class Server {
     }
     //rutas de la pagina
     routes() {
-        this.app.use('/', indexRoutes_1.indexRoutes.router);
-        this.app.use('/users', userRoutes_1.userRoutes.router);
-        this.app.use('/cases', casesRoutes_1.casesRoutes.router);
-        this.app.use('/auth', authRoutes_1.authRoutes.router);
+        this.app.use('/', index_routes_1.indexRoutes.router);
+        this.app.use('/users', user_routes_1.userRoutes.router);
+        this.app.use('/cases', cases_routes_1.casesRoutes.router);
+        this.app.use('/auth', auth_routes_1.authRoutes.router);
     }
     start() {
         this.app.listen(this.app.get('port'), () => {

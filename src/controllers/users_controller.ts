@@ -1,4 +1,4 @@
-import { Request, Response, json } from 'express';
+import { Request, Response } from 'express';
 import { pool } from '../database';
 
 export const userController = new class UserController {

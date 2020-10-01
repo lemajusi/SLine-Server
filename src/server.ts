@@ -2,10 +2,10 @@ import express, { Application } from "express";
 import morgan from 'morgan';
 import cors from 'cors';
 
-import { indexRoutes } from './routes/indexRoutes';
-import { userRoutes } from './routes/userRoutes';
-import { casesRoutes } from './routes/casesRoutes';
-import { authRoutes } from './routes/authRoutes'
+import { indexRoutes } from './routes/index_routes';
+import { userRoutes } from './routes/user_routes';
+import { casesRoutes } from './routes/cases_routes';
+import { authRoutes } from './routes/auth_routes'
 
 
 class Server {

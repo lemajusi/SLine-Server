@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { userController } from '../controllers/usersController';
-import { authService } from './../auth/auth';
+import { userController } from '../controllers/users_controller';
+import { authService } from '../auth/auth';
 
 
 export const userRoutes = new class UserRoutes {

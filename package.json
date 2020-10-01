@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "tsc -w",
-    "start": "nodemon server.js"
+    "dev": "nodemon build/server.js"
   },
   "keywords": [],
   "author": "",
@@ -31,5 +31,4 @@
   "engines": {
     "node": "v12.0.0"
   }
-
 }
