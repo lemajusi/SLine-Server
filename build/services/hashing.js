@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.hashingService = void 0;
 const bcrypt = require('bcrypt');
 exports.hashingService = new class HashingService {
     hashPassword(plainText) {

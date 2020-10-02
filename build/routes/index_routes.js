@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.indexRoutes = void 0;
 const express_1 = require("express");
 const index_controller_1 = require("../controllers/index_controller");
 exports.indexRoutes = new class IndexRoutes {

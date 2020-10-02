@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.casesController = void 0;
 const database_1 = require("../database");
 exports.casesController = new class CasesController {
     addCase(req, res) {
@@ -43,7 +44,7 @@ exports.casesController = new class CasesController {
                 const userId = req.body.userId;
                 let response = yield database_1.pool.query(`SELECT id FROM users WHERE id = ${userId}`);
                 if (response.rowCount === 1 && response.rows[0].id === userId) {
-                    response = yield database_1.pool.query(`SELECT c.*, u.username, u.id FROM cases c INNER JOIN users u ON c.idusuario = u.id`);
+                    response = yield database_1.pool.query(`SELECT c.*, u.username, u.id FROM cases c INNER JOIN users u ON c.id_usuario = u.id`);
                     if (response.rows) {
                         res.send({
                             status: 200,

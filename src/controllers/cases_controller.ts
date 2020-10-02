@@ -34,7 +34,7 @@ export const casesController = new class CasesController{
             let response = await pool.query(`SELECT id FROM users WHERE id = ${userId}`);
             
             if(response.rowCount === 1 && response.rows[0].id === userId){
-                response = await pool.query(`SELECT c.*, u.username, u.id FROM cases c INNER JOIN users u ON c.idusuario = u.id`)
+                response = await pool.query(`SELECT c.*, u.username, u.id FROM cases c INNER JOIN users u ON c.id_usuario = u.id`)
                 
                 if(response.rows){
                     res.send({
