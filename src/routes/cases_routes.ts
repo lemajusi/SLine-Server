@@ -10,15 +10,15 @@ export const casesRoutes = new class CasesRoutes{
     }
 
     public config():void{
-        this.router.get('/', authService.checkAuthenticated, casesController.getCases)
+        this.router.get('/', authService.checkAuthenticated, casesController.getCases);
         
         //By case id
-        this.router.get('/:dato', casesController.getCasoById)
+        this.router.get('/id/:dato', authService.checkAuthenticated, casesController.getCaseById);
 
         //By user id
-        this.router.get('/user/:dato', casesController.getCasoByuserId)
+        this.router.get('/user/:dato', casesController.getCasoByUserId);
 
         //Create
-        this.router.post('/add', authService.checkAuthenticated, casesController.addCase)
+        this.router.post('/add', authService.checkAuthenticated, casesController.addCase);
     }
 };
