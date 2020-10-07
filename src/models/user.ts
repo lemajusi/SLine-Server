@@ -4,7 +4,8 @@ export interface UserDto{
     "password": any;
     "sexo"?: string;
     "rol"?: string;
-    "fecharegistro"?: string;
-    "fechanac"?: string;
+    "fecha_registro"?: string;
+    "fecha_nacimiento"?: string;
     "id"?: number;
+    "profileUrl"?: string;
 }

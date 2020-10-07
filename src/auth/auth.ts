@@ -27,7 +27,7 @@ export const authService = new class AuthService{
                         "username": user.username,
                         "email": user.email,
                         "rol": user.rol,
-                        "fechaIngreso": user.fecharegistro 
+                        "fecha_registro": user.fecha_registro 
                     }
                     let token = await jwtService.createToken(payload).then(result => result);
 
@@ -57,8 +57,8 @@ export const authService = new class AuthService{
                 .then(result => user.password = result)
                 .catch(error => error);
             
-            let response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fechanac}')`);
-
+            let response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fecha_nacimiento}')`);
+           
             if(response.rowCount === 1){
               response = await pool.query(`SELECT id, email, username, rol, fecharegistro FROM users WHERE email='${user.email}'`);
               
@@ -69,11 +69,11 @@ export const authService = new class AuthService{
                     "username": user.username,
                     "email": user.email,
                     "rol": user.rol,
-                    "fechaIngreso": user.fecharegistro 
+                    "fecha_registro": user.fecha_registro 
                 }
                 let token = await jwtService.createToken(payload).then(result => result);
-
-                 res.send({
+                
+                res.send({
                     status: 200,
                     statusMessage: 'Ok',
                     message: 'Usuario creado exitosamente',
@@ -83,11 +83,12 @@ export const authService = new class AuthService{
             } else throw Error();
         
         } catch (error) {
+            console.log(error)
             let err: string = authHandler.errorsChecker(error);
             res.send({
                 status: 403,
                 statusText: 'Internal error',
-                message: err
+                message: err || error
             })
         }
     }
