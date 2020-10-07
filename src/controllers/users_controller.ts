@@ -1,11 +1,46 @@
 import { Request, Response } from 'express';
 import { pool } from '../database';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const userController = new class UserController {
 
+    public async setProfileImage(req: Request, res: Response){
+        try {
+            const data = {
+                title:  req.body.title,
+                image: req.body.image
+            }
+
+            cloudinary.uploader.upload(data.image)
+                .then(async (image) => {
+                    const response = await pool.query(`INSERT INTO userProfileImage(title, cloudinary_id, image_url, user_id) VALUES ('${data.title}', '${image.public_id}', '${image.secure_url}', ${req.body.userId}) RETURNING *`);
+                
+                    let result = response.rows[0];
+
+                    // send success response
+                    res.status(201).send({
+                        status: "success",
+                        data: {
+                            message: "Image Uploaded Successfully",
+                            title: result.title,
+                            cloudinary_id: result.cloudinary_id,
+                            image_url: result.image_url,
+                        },
+                    })
+                })
+                .catch((error) => {
+                    res.send({
+                        message: "error al cargar imagen",
+                        error,
+                    })
+                })
+        } catch (error) {
+            
+        }
+    }
+
     public async getUsers(req: Request, res: Response) {
         const userId = req.body.userId;
-        console.log("hoila")
         try {
             let response = await pool.query(`SELECT id FROM users WHERE id=${userId}`);
 

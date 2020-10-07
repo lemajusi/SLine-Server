@@ -16,12 +16,15 @@ export const userRoutes = new class UserRoutes {
         this.router.get('/', authService.checkAuthenticated, userController.getUsers);
      
         //Search by id
-        this.router.get('/id/:dato', userController.getUserById)
+        this.router.get('/id/:dato', userController.getUserById);
      
+        //Search by id
+        this.router.post('/profileImage', authService.checkAuthenticated, userController.setProfileImage);
+
         //Delete
-        this.router.delete('/dlt/:dato', userController.deleteUser)
+        this.router.delete('/dlt/:dato', userController.deleteUser);
      
         //Update
-        this.router.put('/update/:dato', userController.updateUser)
+        this.router.put('/update/:dato', userController.updateUser);
     }
 }
