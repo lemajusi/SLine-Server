@@ -26,8 +26,10 @@ export const authService = new class AuthService{
                         "sub": user.id,
                         "username": user.username,
                         "email": user.email,
+                        "sexo": user.sexo,
                         "rol": user.rol,
-                        "fecha_registro": user.fecha_registro 
+                        "fecha_registro": user.fecha_registro,
+                        "fecha_nacimiento": user.fecha_nacimiento
                     }
                     let token = await jwtService.createToken(payload).then(result => result);
 
@@ -57,10 +59,10 @@ export const authService = new class AuthService{
                 .then(result => user.password = result)
                 .catch(error => error);
             
-            let response = await pool.query(`INSERT INTO users (username, email, password, sexo, fechanac) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fecha_nacimiento}')`);
+            let response = await pool.query(`INSERT INTO users (username, email, password, sexo, fecha_nacimiento) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fecha_nacimiento}')`);
            
             if(response.rowCount === 1){
-              response = await pool.query(`SELECT id, email, username, rol, fecharegistro FROM users WHERE email='${user.email}'`);
+              response = await pool.query(`SELECT username, email, sexo, fecha_registro, fecha_nacimiento, id, rol FROM users WHERE email='${user.email}'`);
               
               if(response.rowCount === 1){
                 user = response.rows[0];    
@@ -68,8 +70,10 @@ export const authService = new class AuthService{
                     "sub": user.id,
                     "username": user.username,
                     "email": user.email,
+                    "sexo": user.sexo,
                     "rol": user.rol,
-                    "fecha_registro": user.fecha_registro 
+                    "fecha_registro": user.fecha_registro,
+                    "fecha_nacimiento": user.fecha_nacimiento
                 }
                 let token = await jwtService.createToken(payload).then(result => result);
                 
