@@ -8,12 +8,10 @@ import { authHandler } from './../handlers/authHandler';
 export const authService = new class AuthService{
 
     public async authService(req: Request, res: Response){
-
-        let user: UserDto = req.body;
-
         try {
+            let user: UserDto = req.body;
             const response = await pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
-            
+            console.log(response.rows[0])
             if(response.rowCount === 1 && response.rows[0]){
                 let dbPass: string = response.rows[0].password;
                 let match = await hashingService.comparePasswords(user.password, dbPass)
@@ -29,8 +27,10 @@ export const authService = new class AuthService{
                         "sexo": user.sexo,
                         "rol": user.rol,
                         "fecha_registro": user.fecha_registro,
-                        "fecha_nacimiento": user.fecha_nacimiento
+                        "fecha_nacimiento": user.fecha_nacimiento,
+                        "image_url": user.image_url
                     }
+                    console.log(payload)
                     let token = await jwtService.createToken(payload).then(result => result);
 
                     res.send({
@@ -59,10 +59,17 @@ export const authService = new class AuthService{
                 .then(result => user.password = result)
                 .catch(error => error);
             
-            let response = await pool.query(`INSERT INTO users (username, email, password, sexo, fecha_nacimiento) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fecha_nacimiento}')`);
+            if(user.sexo === "Hombre"){
+                user.image_url = "https://res.cloudinary.com/sline-uy/image/upload/v1602080778/male-profile.png"
+            }
+            if(user.sexo === "Mujer"){
+                user.image_url = "https://res.cloudinary.com/sline-uy/image/upload/v1602080775/female-profile.png"
+            }
+            
+            let response = await pool.query(`INSERT INTO users (username, email, password, sexo, fecha_nacimiento, image_url) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fecha_nacimiento}', '${user.image_url}')`);
            
             if(response.rowCount === 1){
-              response = await pool.query(`SELECT username, email, sexo, fecha_registro, fecha_nacimiento, id, rol FROM users WHERE email='${user.email}'`);
+              response = await pool.query(`SELECT username, email, sexo, fecha_registro, fecha_nacimiento, id, rol, image_url FROM users WHERE email='${user.email}'`);
               
               if(response.rowCount === 1){
                 user = response.rows[0];    
@@ -73,7 +80,8 @@ export const authService = new class AuthService{
                     "sexo": user.sexo,
                     "rol": user.rol,
                     "fecha_registro": user.fecha_registro,
-                    "fecha_nacimiento": user.fecha_nacimiento
+                    "fecha_nacimiento": user.fecha_nacimiento,
+                    "iamge_url": user.image_url
                 }
                 let token = await jwtService.createToken(payload).then(result => result);
                 
@@ -87,7 +95,6 @@ export const authService = new class AuthService{
             } else throw Error();
         
         } catch (error) {
-            console.log(error)
             let err: string = authHandler.errorsChecker(error);
             res.send({
                 status: 403,

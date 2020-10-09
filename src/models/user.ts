@@ -7,5 +7,5 @@ export interface UserDto{
     "fecha_registro"?: string;
     "fecha_nacimiento"?: string;
     "id"?: number;
-    "profileUrl"?: string;
+    "image_url"?: string;
 }
