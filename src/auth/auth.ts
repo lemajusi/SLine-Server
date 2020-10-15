@@ -10,8 +10,9 @@ export const authService = new class AuthService{
     public async authService(req: Request, res: Response){
         try {
             let user: UserDto = req.body;
-            const response = await pool.query(`SELECT * FROM users WHERE email='${user.email}'`);
-            console.log(response.rows[0])
+            const response = await pool.query(`SELECT username, email, sexo, to_char(fecha_registro, 'DD/MM/YYYY') as fecha_registro, to_char(fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, id, rol, image_url FROM users WHERE email='${user.email}'`);
+
+            
             if(response.rowCount === 1 && response.rows[0]){
                 let dbPass: string = response.rows[0].password;
                 let match = await hashingService.comparePasswords(user.password, dbPass)
@@ -30,7 +31,6 @@ export const authService = new class AuthService{
                         "fecha_nacimiento": user.fecha_nacimiento,
                         "image_url": user.image_url
                     }
-                    console.log(payload)
                     let token = await jwtService.createToken(payload).then(result => result);
 
                     res.send({
@@ -69,8 +69,8 @@ export const authService = new class AuthService{
             let response = await pool.query(`INSERT INTO users (username, email, password, sexo, fecha_nacimiento, image_url) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fecha_nacimiento}', '${user.image_url}')`);
            
             if(response.rowCount === 1){
-              response = await pool.query(`SELECT username, email, sexo, fecha_registro, fecha_nacimiento, id, rol, image_url FROM users WHERE email='${user.email}'`);
-              
+              response = await pool.query(`SELECT username, email, sexo, to_char(fecha_registro, 'DD/MM/YYYY') as fecha_registro, to_char(fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, id, rol, image_url FROM users WHERE email='${user.email}'`);
+              console.log(response.rows[0])
               if(response.rowCount === 1){
                 user = response.rows[0];    
                 let payload = { 
@@ -81,7 +81,7 @@ export const authService = new class AuthService{
                     "rol": user.rol,
                     "fecha_registro": user.fecha_registro,
                     "fecha_nacimiento": user.fecha_nacimiento,
-                    "iamge_url": user.image_url
+                    "image_url": user.image_url
                 }
                 let token = await jwtService.createToken(payload).then(result => result);
                 

@@ -2,7 +2,6 @@ import express, { Application } from "express";
 import morgan from 'morgan';
 import cors from 'cors';
 import dotenv from 'dotenv';
-
 var fileExtension = require('file-extension')
 
 import { v2 as cloudinary } from 'cloudinary';

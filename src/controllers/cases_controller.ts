@@ -12,7 +12,6 @@ export const casesController = new class CasesController{
             const response = await pool.query(`INSERT INTO cases(lat, lng, descripcion, tipo_violencia, id_usuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', '${caseData.tipo_violencia}', ${caseData.id_usuario});`);
             
             if(response.rowCount === 1){
-                console.log(response)
                 res.send({
                     status: 201,
                     statusText: 'Created',
@@ -32,8 +31,8 @@ export const casesController = new class CasesController{
     public async getCases(req:Request, res:Response){
         try {
             const userId = req.body.userId;
-            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verified, c.lat, c.lng, c.tipo_violencia, c.id_usuario, u.username FROM cases c INNER JOIN users u ON u.id = ${userId}`)
-           
+            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario, u.username FROM cases c INNER JOIN users u ON u.id = ${userId}`)
+
             if(response.rows){
                 res.send({
                     status: 200,
