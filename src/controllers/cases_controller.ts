@@ -75,16 +75,49 @@ export const casesController = new class CasesController{
 
     public async getCasoByUserId(req:Request, res:Response){
         try {
+            let userId = +req.body.userId;
+            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario FROM cases c WHERE c.id_usuario=${userId}`);
+            
+            if(response.rows[0]){
+                res.send({
+                    status: res.statusCode,
+                    message: res.statusMessage,
+                    data: response.rows
+                })
+            } else throw Error();
+        
         } catch (error) {
-            console.log(error)
             res.send({
-                status: 403,
-                statusText: "Error",
+                status: res.statusCode,
+                statusText: res.statusMessage,
+                message: JSON.stringify(error)
             })
         }
     }
 
     public async updateCaso(req:Request, res:Response){
         const caso =  await pool.query("select * from casos where id ='"+req.body.id) 
-    } 
+    }
+
+    public async deleteCase(req:Request, res:Response){
+        try {
+            let caseId = +req.params.id;
+            let response = await pool.query(`DELETE FROM cases WHERE cases.id_caso=${caseId}`);
+            
+            if(response.rows[0]){
+                res.send({
+                    status: res.statusCode,
+                    statusText: res.statusMessage,
+                })
+            } else throw Error();
+        
+        } catch (error) {
+            res.send({
+                status: res.statusCode,
+                statusText: res.statusMessage,
+                message: error
+            })
+            console.log(error)
+        }
+    }
 }

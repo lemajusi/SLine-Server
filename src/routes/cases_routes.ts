@@ -12,13 +12,13 @@ export const casesRoutes = new class CasesRoutes{
     public config():void{
         this.router.get('/', authService.checkAuthenticated, casesController.getCases);
         
-        //By case id
         this.router.get('/id/:dato', authService.checkAuthenticated, casesController.getCaseById);
 
-        //By user id
-        this.router.get('/user/:dato', casesController.getCasoByUserId);
+        this.router.get('/user', authService.checkAuthenticated, casesController.getCasoByUserId);
 
-        //Create
         this.router.post('/add', authService.checkAuthenticated, casesController.addCase);
+
+        this.router.delete('/delete/:dato', authService.checkAuthenticated, casesController.deleteCase);
+
     }
 };
