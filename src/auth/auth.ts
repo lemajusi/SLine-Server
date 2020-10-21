@@ -34,11 +34,17 @@ export const authService = new class AuthService{
                     let token = await jwtService.createToken(payload).then(result => result);
 
                     res.send({
-                        "status": 200,
-                        "statusText": 'Ok',
-                        "message": 'Nombre de usuario y contraseña correctos.',
+                        "status": res.statusCode,
+                        "statusText": res.statusMessage,
                         "token": token
                     });
+                    // res
+                    //     .status(200)
+                    //     .cookie('access_token', token, {
+                    //         expires: new Date(Date.now() + 8 * 3600000), // cookie will be removed after 8 hours
+                    //         secure: true
+                    //     })
+                    //     .redirect(301, '/')
                 } else throw 'Password no coincide.'
             } else throw 'Email y/o password no coinciden.';
             

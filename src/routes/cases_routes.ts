@@ -20,5 +20,7 @@ export const casesRoutes = new class CasesRoutes{
 
         this.router.delete('/delete/:dato', authService.checkAuthenticated, casesController.deleteCase);
 
+        this.router.put('/update', authService.checkAuthenticated, casesController.updateCase);
+
     }
 };
