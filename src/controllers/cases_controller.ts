@@ -19,8 +19,8 @@ export const casesController = new class CasesController{
                     "message": 'Datos ingresados correctamente',
                 })
             } else throw 'Datos no ingresados';
+        
         } catch (error) {
-
             res.send({
                 "status": res.statusCode,
                 "statusMessage": res.statusMessage,
@@ -86,7 +86,7 @@ export const casesController = new class CasesController{
                     message: res.statusMessage,
                     data: response.rows
                 })
-            } throw 'Ninguna fila afectada';
+            } else throw 'Ninguna fila afectada';
         
         } catch (error) {
             res.send({
@@ -100,7 +100,6 @@ export const casesController = new class CasesController{
     public async updateCase(req:Request, res:Response){
         try{
             let caseData: CaseDto = req.body;
-            console.log(caseData)
 
             const response = await pool.query(`UPDATE cases SET lat=${caseData.lat}, lng=${caseData.lng}, tipo_violencia='${caseData.tipo_violencia}',
                                         descripcion='${caseData.descripcion}' WHERE id_caso=${caseData.id_caso}`);
@@ -111,8 +110,9 @@ export const casesController = new class CasesController{
                     "statusText": res.statusMessage,
                     "message": 'Datos actualizados correctamente'
                 })
-            } throw 'Error al intentar actualizar datos';
-        } catch(error){
+            } else throw 'Error al intentar actualizar datos';
+
+        } catch(error) {
             res.send({
                 "status": res.statusCode,
                 "statusText": res.statusMessage,
@@ -132,7 +132,7 @@ export const casesController = new class CasesController{
                     statusText: res.statusMessage,
                     message: 'Caso eliminado correctamente'
                 })
-            } throw 'Ninguna fila ha sido afectada';
+            } else throw 'Ninguna fila ha sido afectada';
         
         } catch (error) {
             res.send({
