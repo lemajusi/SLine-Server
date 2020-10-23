@@ -10,7 +10,7 @@ export const casesController = new class CasesController{
             let caseData: CaseDto = req.body;
             caseData.id_usuario = req.body.userId;
 
-            const response = await pool.query(`INSERT INTO cases(lat, lng, descripcion, tipo_violencia, id_usuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', '${caseData.tipo_violencia}', ${caseData.id_usuario});`);
+            const response = await pool.query(`INSERT INTO _case(lat, lng, descripcion, tipo_violencia, id_usuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', '${caseData.tipo_violencia}', ${caseData.id_usuario});`);
             
             if(response.rowCount === 1){
                 res.send({
@@ -32,7 +32,7 @@ export const casesController = new class CasesController{
     public async getCases(req:Request, res:Response){
         try {
             const userId = req.body.userId;
-            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario, u.username FROM cases c INNER JOIN users u ON u.id = ${userId}`)
+            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario, u.username FROM _case c INNER JOIN _user u ON u.id = ${userId}`)
 
             if(response.rows){
                 res.send({
@@ -55,7 +55,11 @@ export const casesController = new class CasesController{
         try {
             let userId = +req.body.userId;
             let caseId = +req.params.dato;
-            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario FROM cases c WHERE c.id_caso=${caseId} AND c.id_usuario=${userId}`);
+            let response = await pool.query(`
+                SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.tipo_violencia, c.id_usuario, u.username FROM _case c 
+                INNER JOIN _user u
+                ON u.id=${userId}
+                WHERE c.id_caso = ${caseId}`);
             
             if(response.rows[0]){
                 res.send({
@@ -66,7 +70,8 @@ export const casesController = new class CasesController{
                 })
             } else throw Error();
         
-        } catch (error) {
+        } catch (error) { 
+            console.log(error)
             res.send({
                 status: 403,
                 statusText: "Error",
@@ -78,7 +83,7 @@ export const casesController = new class CasesController{
     public async getCasoByUserId(req:Request, res:Response){
         try {
             let userId = +req.body.userId;
-            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario FROM cases c WHERE c.id_usuario=${userId}`);
+            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario FROM _case c WHERE c.id_usuario=${userId}`);
             
             if(response.rows.length) {
                 res.send({
@@ -101,7 +106,7 @@ export const casesController = new class CasesController{
         try{
             let caseData: CaseDto = req.body;
 
-            const response = await pool.query(`UPDATE cases SET lat=${caseData.lat}, lng=${caseData.lng}, tipo_violencia='${caseData.tipo_violencia}',
+            const response = await pool.query(`UPDATE _case SET tipo_violencia='${caseData.tipo_violencia}',
                                         descripcion='${caseData.descripcion}' WHERE id_caso=${caseData.id_caso}`);
 
             if(response.rowCount === 1){
@@ -124,7 +129,7 @@ export const casesController = new class CasesController{
     public async deleteCase(req:Request, res:Response){
         try {
             let caseId = +req.params.dato;
-            let response = await pool.query(`DELETE FROM cases WHERE id_caso=${caseId}`);
+            let response = await pool.query(`DELETE FROM _case WHERE id_caso=${caseId}`);
 
             if(response.rowCount === 1){
                 res.send({

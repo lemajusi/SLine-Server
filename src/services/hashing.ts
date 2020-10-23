@@ -1,10 +1,11 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 export const hashingService = new class HashingService{
 
     public async hashPassword(plainText: string){
         try {
-            return new Promise(resolve => resolve(bcrypt.hashSync(plainText, 10)));
+            var salt = bcrypt.genSaltSync(10);
+            return new Promise(resolve => resolve(bcrypt.hashSync(plainText, salt)));
         } catch (error) {
             console.log(error)
         }
@@ -12,7 +13,7 @@ export const hashingService = new class HashingService{
 
     public async comparePasswords(inPass: string, dbPass: string): Promise<any>{
         try {
-            return new Promise(resolve => resolve(bcrypt.compare(inPass, dbPass)));
+            return new Promise(resolve => resolve(bcrypt.compareSync(inPass, dbPass)));
         } catch (error) {
             console.log(error);
             return error;

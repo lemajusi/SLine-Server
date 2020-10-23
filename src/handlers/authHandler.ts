@@ -5,25 +5,13 @@ let userModel: UserDto;
 
 export const authHandler = new class authHandler{
 
-    public validateBody = (userData: UserDto): boolean => {
-        if(!userData){
-            return false;
-        }
-
-        if(userData !== userModel){
-            return false;
-        }
-
-        return true;
-    }
-
     public errorsChecker = (error: any):string => {
         let err = '';
-        if (error.constraint === 'users_username_key'){
+        if (error.constraint === '_user_username_key'){
             err = 'Nombre de usuario ya esta en uso';
         } 
         
-        if (error.constraint === 'users_email_key'){
+        if (error.constraint === '_user_email_key'){
            return 'Correo electronico en uso';
         }
 

@@ -9,11 +9,11 @@ export const casesRoutes = new class CasesRoutes{
         this.config()
     }
 
-    public config():void{
-        this.router.get('/', authService.checkAuthenticated, casesController.getCases);
-        
+    public config():void {
         this.router.get('/id/:dato', authService.checkAuthenticated, casesController.getCaseById);
 
+        this.router.get('/', authService.checkAuthenticated, casesController.getCases);
+        
         this.router.get('/user', authService.checkAuthenticated, casesController.getCasoByUserId);
 
         this.router.post('/add', authService.checkAuthenticated, casesController.addCase);

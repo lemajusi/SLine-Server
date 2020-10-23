@@ -10,17 +10,22 @@ export const authService = new class AuthService{
     public async authService(req: Request, res: Response){
         try {
             let user: UserDto = req.body;
-            const response = await pool.query(`SELECT username, email, sexo, to_char(fecha_registro, 'DD/MM/YYYY') as fecha_registro, to_char(fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, id, rol, image_url FROM users WHERE email='${user.email}'`);
-
+            const response = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'DD/MM/YYYY') as fecha_registro, to_char(u.fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, u.id, u.rol 
+                                                FROM _user u
+                                                WHERE email='${user.email}'`);
             
-            if(response.rowCount === 1 && response.rows[0]){
+            const image_url = await pool.query(`SELECT i.image_url FROM userProfileImage i INNER JOIN _user u
+                                                ON i.user_id = ${response.rows[0].id}`);
+
+            if(response.rowCount){
                 let dbPass: string = response.rows[0].password;
                 let match = await hashingService.comparePasswords(user.password, dbPass)
                                 .then(result => result)
                                 .catch(error => error);
 
                 if(match){
-                    user = response.rows[0];    
+                    user = response.rows[0];
+                    user.image_url = image_url.rows[0];
                     let payload = { 
                         "sub": user.id,
                         "username": user.username,
@@ -38,26 +43,20 @@ export const authService = new class AuthService{
                         "statusText": res.statusMessage,
                         "token": token
                     });
-                    // res
-                    //     .status(200)
-                    //     .cookie('access_token', token, {
-                    //         expires: new Date(Date.now() + 8 * 3600000), // cookie will be removed after 8 hours
-                    //         secure: true
-                    //     })
-                    //     .redirect(301, '/')
+
                 } else throw 'Password no coincide.'
             } else throw 'Email y/o password no coinciden.';
             
         } catch (error) {
             res.send({
-                status: 500,
-                statusText: 'Internal error',
+                status: res.statusCode,
+                statusText: res.statusMessage,
                 message: error
             });
-        };
+        }
     }
 
-    public async signUp(req: Request, res: Response){
+    public async signUp(req: Request, res: Response){ 
         try {
             let user: UserDto = req.body;
 
@@ -65,46 +64,46 @@ export const authService = new class AuthService{
                 .then(result => user.password = result)
                 .catch(error => error);
             
-            if(user.sexo === "Hombre"){
-                user.image_url = "https://res.cloudinary.com/sline-uy/image/upload/v1602080778/male-profile.png"
-            }
-            if(user.sexo === "Mujer"){
-                user.image_url = "https://res.cloudinary.com/sline-uy/image/upload/v1602080775/female-profile.png"
-            }
-            
-            let response = await pool.query(`INSERT INTO users (username, email, password, sexo, fecha_nacimiento, image_url) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fecha_nacimiento}', '${user.image_url}')`);
+            let response = await pool.query(`INSERT INTO _user (username, email, password, sexo, fecha_nacimiento) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fecha_nacimiento}')`);
            
-            if(response.rowCount === 1){
-              response = await pool.query(`SELECT username, email, sexo, to_char(fecha_registro, 'DD/MM/YYYY') as fecha_registro, to_char(fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, id, rol, image_url FROM users WHERE email='${user.email}'`);
-              console.log(response.rows[0])
-              if(response.rowCount === 1){
-                user = response.rows[0];    
-                let payload = { 
-                    "sub": user.id,
-                    "username": user.username,
-                    "email": user.email,
-                    "sexo": user.sexo,
-                    "rol": user.rol,
-                    "fecha_registro": user.fecha_registro,
-                    "fecha_nacimiento": user.fecha_nacimiento,
-                    "image_url": user.image_url
-                }
-                let token = await jwtService.createToken(payload).then(result => result);
+            if(response.rowCount){
+                response = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'DD/MM/YYYY') as fecha_registro, to_char(u.fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, u.id, u.rol 
+                                                FROM _user u
+                                                WHERE email='${user.email}'`);
+
+                const image_url = await pool.query(`SELECT i.image_url FROM userProfileImage i INNER JOIN _user u
+                                                        ON i.user_id = ${response.rows[0].id}`);
+                if(response.rowCount){
+                    user = response.rows[0];
+                    user.image_url = image_url.rows[0];
+                    
+                    let payload = { 
+                        "sub": user.id,
+                        "username": user.username,
+                        "email": user.email,
+                        "sexo": user.sexo,
+                        "rol": user.rol,
+                        "fecha_registro": user.fecha_registro,
+                        "fecha_nacimiento": user.fecha_nacimiento,
+                        "image_url": user.image_url
+                    }
                 
-                res.send({
+                    let token = await jwtService.createToken(payload).then(result => result);
+                
+                    res.send({
                     status: 200,
                     statusMessage: 'Ok',
                     message: 'Usuario creado exitosamente',
                     token: token
                 })
-              } else throw Error();
+                } else throw Error();
             } else throw Error();
         
         } catch (error) {
             let err: string = authHandler.errorsChecker(error);
             res.send({
-                status: 403,
-                statusText: 'Internal error',
+                status: res.statusCode,
+                statusText: res.statusMessage,
                 message: err || error
             })
         }

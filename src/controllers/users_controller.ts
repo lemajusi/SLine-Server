@@ -6,6 +6,7 @@ export const userController = new class UserController {
 
     public async setProfileImage(req: Request, res: Response){
         try {
+            console.log(req.body);
             const data = {
                 title:  req.body.title,
                 image: req.body.image
@@ -42,10 +43,10 @@ export const userController = new class UserController {
     public async getUsers(req: Request, res: Response) {
         const userId = req.body.userId;
         try {
-            let response = await pool.query(`SELECT id FROM users WHERE id=${userId}`);
+            let response = await pool.query(`SELECT id FROM _user WHERE id=${userId}`);
 
             if(response.rowCount === 1 && response.rows[0].id === userId){
-                response = await pool.query('SELECT username, email, fechanac, fecharegistro, sexo FROM users');
+                response = await pool.query('SELECT username, email, fechanac, fecharegistro, sexo FROM _user');
 
                 if(response.rows.length){
                     res.send({
@@ -66,7 +67,7 @@ export const userController = new class UserController {
 
     public async getUserById(req: Request, res: Response) {
         try {
-            const response = await pool.query("SELECT * FROM users WHERE id = '" + req.params.dato +"'")
+            const response = await pool.query("SELECT * FROM _user WHERE id = '" + req.params.dato +"'")
             if(response.rows == null){
                 res.send({
                     status: 403,
