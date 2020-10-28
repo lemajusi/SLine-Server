@@ -56,7 +56,7 @@ export const casesController = new class CasesController{
             let userId = +req.body.userId;
             let caseId = +req.params.dato;
             let response = await pool.query(`
-                SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.tipo_violencia, c.id_usuario, u.username FROM _case c 
+                SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.tipo_violencia, c.id_usuario, c.lat, c.lng, u.username FROM _case c 
                 INNER JOIN _user u
                 ON u.id=${userId}
                 WHERE c.id_caso = ${caseId}`);
@@ -105,10 +105,10 @@ export const casesController = new class CasesController{
     public async updateCase(req:Request, res:Response){
         try{
             let caseData: CaseDto = req.body;
-
+            console.log(caseData)
             const response = await pool.query(`UPDATE _case SET tipo_violencia='${caseData.tipo_violencia}',
-                                        descripcion='${caseData.descripcion}' WHERE id_caso=${caseData.id_caso}`);
-
+                                        descripcion='${caseData.descripcion}', lat=${caseData.lat}, lng=${caseData.lng} WHERE id_caso=${caseData.id_caso}`);
+            console.log(response)
             if(response.rowCount === 1){
                 res.send({
                     "status": res.statusCode,
