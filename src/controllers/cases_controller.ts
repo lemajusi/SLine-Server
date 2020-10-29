@@ -1,6 +1,5 @@
 import { Request, Response }from 'express';
-import { read } from 'fs';
-import { pool } from '../database'
+import { sequelize } from '../database'
 import { CaseDto } from '../models/case';
 
 export const casesController = new class CasesController{

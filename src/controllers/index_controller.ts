@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { pool } from '../database';
+import { sequelize } from '../database';
 
 export const indexController = new class IndexController {
     public async index (req: Request, res: Response) {

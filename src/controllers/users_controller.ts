@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { pool } from '../database';
+import { sequelize } from '../database';
 import { v2 as cloudinary } from 'cloudinary';
 
 export const userController = new class UserController {
