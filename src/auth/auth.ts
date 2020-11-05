@@ -10,19 +10,19 @@ export const authService = new class AuthService{
     public async authService(req: Request, res: Response){
         try {
             let user: UserDto = req.body;
+
             const response = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'DD/MM/YYYY') as fecha_registro, to_char(u.fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, u.id, u.rol 
-                                                FROM _user u
-                                                WHERE email='${user.email}'`);
+                                            FROM _user u
+                                            WHERE email='${user.email}'`);
             
-            const image_url = await pool.query(`SELECT i.image_url FROM userProfileImage i INNER JOIN _user u
+            if(response.rowCount !== 0){
+                const image_url = await pool.query(`SELECT i.image_url FROM userProfileImage i INNER JOIN _user u
                                                 ON i.user_id = ${response.rows[0].id}`);
 
-            if(response.rowCount){
                 let dbPass: string = response.rows[0].password;
                 let match = await hashingService.comparePasswords(user.password, dbPass)
                                 .then(result => result)
                                 .catch(error => error);
-
                 if(match){
                     user = response.rows[0];
                     user.image_url = image_url.rows[0];
@@ -37,17 +37,17 @@ export const authService = new class AuthService{
                         "image_url": user.image_url
                     }
                     let token = await jwtService.createToken(payload).then(result => result);
-
                     res.send({
                         "status": res.statusCode,
                         "statusText": res.statusMessage,
                         "token": token
                     });
-
                 } else throw 'Password no coincide.'
+                
             } else throw 'Email y/o password no coinciden.';
-            
+
         } catch (error) {
+            console.log(error)
             res.send({
                 status: res.statusCode,
                 statusText: res.statusMessage,

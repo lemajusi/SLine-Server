@@ -16,7 +16,7 @@ export const userRoutes = new class UserRoutes {
         this.router.get('/', authService.checkAuthenticated, userController.getUsers);
      
         //Search by id
-        this.router.get('/id/:dato', userController.getUserById);
+        this.router.get('/id', authService.checkAuthenticated, userController.getUserById);
      
         //Search by id
         this.router.post('/profileImage', authService.checkAuthenticated, userController.setProfileImage);

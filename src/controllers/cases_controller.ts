@@ -32,19 +32,19 @@ export const casesController = new class CasesController{
     public async getCases(req:Request, res:Response){
         try {
             const userId = req.body.userId;
-            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario, u.username FROM _case c INNER JOIN _user u ON u.id = ${userId}`)
+            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario, u.username FROM _case c INNER JOIN _user u ON u.id = c.id_usuario`)
 
             if(response.rows){
                 res.send({
-                    "status": 200,
-                    "message": 'Request Successfully',
+                    "status": res.statusCode,
+                    "message": 'Cases got successfully',
                     "data": response.rows
                 });
             } else throw 'No hay casos registrados';
 
         } catch (error) {
             res.send({
-                "status": 403,
+                "status": res.statusCode,
                 "statusText": "Internal error",
                 "message": error
             });
@@ -83,7 +83,7 @@ export const casesController = new class CasesController{
     public async getCasoByUserId(req:Request, res:Response){
         try {
             let userId = +req.body.userId;
-            let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario FROM _case c WHERE c.id_usuario=${userId}`);
+            let response = await pool.query(`SELECT id_caso, descripcion, to_char(fecha_registro, 'DD/MM/YYYY') as fecha_registro, verificado, lat, lng, tipo_violencia, id_usuario FROM _case WHERE id_usuario=${userId}`);
             
             if(response.rows.length) {
                 res.send({

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { pool } from '../database';
 import { v2 as cloudinary } from 'cloudinary';
+import { UserDto } from '../models/user';
 
 export const userController = new class UserController {
 
@@ -67,26 +68,29 @@ export const userController = new class UserController {
 
     public async getUserById(req: Request, res: Response) {
         try {
-            const response = await pool.query("SELECT * FROM _user WHERE id = '" + req.params.dato +"'")
-            if(response.rows == null){
+            let userId = +req.body.userId;
+            const response = await pool.query(`SELECT username, email, to_char(fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, sexo FROM _user WHERE id = ${userId}`)
+            
+            let user: UserDto = response.rows[0];
+            
+            if(response.rowCount !== 0){
+                const image_url = await pool.query(`SELECT image_url FROM userProfileImage WHERE user_id = ${userId}`);
+
+                if(image_url.rows[0]){
+                    user.image_url = image_url.rows[0]; 
+                }
+
                 res.send({
-                    status: 403,
-                    statusText: "error",
-                    message: "This user doesn't exist"
+                    status: res.statusCode,
+                    message: "User found successfully",
+                    data: user
                 })
-            }
-            else{
-                res.json({
-                    status: 200,
-                    message: 'Request Successfull',
-                    data: response.rows
-                })            
             }
         } catch (error) {
             console.log(error)
             res.send({
-                status: 404,
-                statusText: "error"
+                status: res.statusCode,
+                statusText: "User not found"
             })
         }
     }
