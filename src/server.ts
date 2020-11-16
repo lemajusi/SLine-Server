@@ -9,16 +9,20 @@ import { authRoutes } from './routes/auth_routes'
 
 var app = express();
 var port = 3000;
+app.use(express.json())
+var router = express.Router()
+
 https.createServer({
     cert: fs.readFileSync('server-cert.pem'),
     key: fs.readFileSync('server-key.pem')
 },app).listen(port, function(){
     console.log("conected")
 })
-app.get('/',indexRoutes.router);
-app.get('/users',userRoutes.router);
-app.get('/cases',casesRoutes.router);
-app.get('/auth',authRoutes.router);
+router.use('/',indexRoutes.router)
+router.use('/users',userRoutes.router)
+router.use('/cases',casesRoutes.router)
+router.use('/auth',authRoutes.router)
+app.use('/' ,router);
 /*class Server {
     app: Application;
 
