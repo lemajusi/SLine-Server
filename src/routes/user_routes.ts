@@ -22,9 +22,9 @@ export const userRoutes = new class UserRoutes {
         this.router.post('/profileImage', authService.checkAuthenticated, userController.setProfileImage);
 
         //Delete
-        this.router.delete('/dlt/:dato', userController.deleteUser);
+        this.router.delete('/dlt', authService.checkAuthenticated, userController.deleteUser);
      
         //Update
-        this.router.put('/update/:dato', userController.updateUser);
+        this.router.put('/update', authService.checkAuthenticated, userController.updateUser);
     }
 }

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { pool } from '../database';
 import { v2 as cloudinary } from 'cloudinary';
 import { UserDto } from '../models/user';
+import { jwtService } from '../services/jwt';
 
 export const userController = new class UserController {
 
@@ -95,43 +96,52 @@ export const userController = new class UserController {
         }
     }
         
-    public async updateUser(req:Request, res:Response){
-        const result = await pool.query("select * from usuario where username = '" + req.params.dato +"'")
-        const a = result.rows
-        console.log(result.rows)
-        if(a[0] == null){
-            res.send({
-                status: 403,
-                statusText: "Error",
-                message:"This user doesn't exist"
-            })
-        }else{
-            try {
-                const result = await pool.query("update usuario set username='"+ req.body.username+
-                "', email='"+req.body.email+
-                "', password='"+req.body.password+
-                "', sexo='"+req.body.sexo+
-                "', fechanac='"+req.body.fechanac+"' where username = '"+req.params.dato+"'")
-                res.send({
-                    status: 200,
-                    statusText: "Updated Succesfully"
-                })
+    public async updateUser(req: Request, res: Response){
+        try {
+            let user: UserDto = req.body;
+            user.id = req.body.userId;
+
+            let response = await pool.query(`UPDATE _user SET username = '${user.username}', email = '${user.email}', sexo = '${user.sexo}', fecha_nacimiento = '${user.fecha_nacimiento}' WHERE id = ${user.id}`);
+            user  = response.rows[0];
+
+            response  = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'MM-DD-YYYY') as fecha_registro, to_char(u.fecha_nacimiento, 'MM-DD-YYYY') as fecha_nacimiento, u.id, u.rol 
+                                            FROM _user u
+                                            WHERE email='${user.email}'`);
+            
+            const image_url = await pool.query(`SELECT i.image_url FROM userProfileImage i INNER JOIN _user u
+                                                        ON i.user_id = ${response.rows[0].id}`);
+            
+            if(response.rows[0]){
+                user = response.rows[0];
+                user.image_url = image_url.rows[0];
                 
-            } catch (error) {
-                console.log(error)
-                let err = undefined;
-                if (error.constraint == "usuario_username_key"){
-                    err = "Usuario duplicado.";
+                let payload = { 
+                    "sub": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "sexo": user.sexo,
+                    "rol": user.rol,
+                    "fecha_registro": user.fecha_registro,
+                    "fecha_nacimiento": user.fecha_nacimiento,
+                    "image_url": user.image_url
                 }
-                if (error.constraint == "usuario_email_key"){
-                    err = "Email duplicado.";
-                }
+            
+                let token = await jwtService.createToken(payload).then(result => result);
+            
                 res.send({
-                    status: 403,
-                    statusText: "Error de Datos",
-                    message: err
+                status: 200,
+                statusMessage: 'Ok',
+                message: 'Usuario creado exitosamente',
+                token: token
                 })
-            }
+            } else throw 'Error al actualizar datos';
+        } catch (error) {
+            console.log(error);
+            res.send({
+                "status": res.statusCode,
+                "message": JSON.stringify(error)
+            })
+
         }
     }
 
