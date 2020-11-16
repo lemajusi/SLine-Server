@@ -1,26 +1,25 @@
 import express, { Application } from "express";
-import morgan from 'morgan';
-import cors from 'cors';
-import dotenv from 'dotenv';
-var fileExtension = require('file-extension')
-
-import { v2 as cloudinary } from 'cloudinary';
+import https from 'https';
+var fs = require('fs');
 
 import { indexRoutes } from './routes/index_routes';
 import { userRoutes } from './routes/user_routes';
 import { casesRoutes } from './routes/cases_routes';
 import { authRoutes } from './routes/auth_routes'
 
-
-dotenv.config();
-
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET
+var app = express();
+var port = 3000;
+https.createServer({
+    cert: fs.readFileSync('server-cert.pem'),
+    key: fs.readFileSync('server-key.pem')
+},app).listen(port, function(){
+    console.log("conected")
 })
-
-class Server {
+app.get('/',indexRoutes.router);
+app.get('/users',userRoutes.router);
+app.get('/cases',casesRoutes.router);
+app.get('/auth',authRoutes.router);
+/*class Server {
     app: Application;
 
     constructor(){
@@ -55,3 +54,5 @@ class Server {
 
 const server = new Server()
 server.start()
+*/
+
