@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import https from 'https';
 var morgan = require('morgan');
+var cors = require('cors');
 var fs = require('fs');
 
 import { indexRoutes } from './routes/index_routes';
@@ -10,7 +11,8 @@ import { authRoutes } from './routes/auth_routes'
 
 var app = express();
 var port = 3000;
-app.use(morgan('dev'))
+app.use(morgan('dev'));
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 var router = express.Router()
