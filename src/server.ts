@@ -1,26 +1,33 @@
 import express, { Application } from "express";
-import morgan from 'morgan';
-import cors from 'cors';
-import dotenv from 'dotenv';
-var fileExtension = require('file-extension')
-
-import { v2 as cloudinary } from 'cloudinary';
+import https from 'https';
+var morgan = require('morgan');
+var cors = require('cors');
+var fs = require('fs');
 
 import { indexRoutes } from './routes/index_routes';
 import { userRoutes } from './routes/user_routes';
 import { casesRoutes } from './routes/cases_routes';
 import { authRoutes } from './routes/auth_routes'
 
-
-dotenv.config();
-
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET
+var app = express();
+var port = 3000;
+app.use(morgan('dev'));
+app.use(cors())
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
+var router = express.Router()
+https.createServer({
+    cert: fs.readFileSync('server-cert.pem'),
+    key: fs.readFileSync('server-key.pem')
+},app).listen(port, function(){
+    console.log("conected")
 })
-
-class Server {
+router.use('/',indexRoutes.router)
+router.use('/users',userRoutes.router)
+router.use('/cases',casesRoutes.router)
+router.use('/auth',authRoutes.router)
+app.use('/' ,router);
+/*class Server {
     app: Application;
 
     constructor(){
@@ -55,3 +62,5 @@ class Server {
 
 const server = new Server()
 server.start()
+*/
+
