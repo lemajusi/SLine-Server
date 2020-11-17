@@ -15,18 +15,24 @@ app.use(morgan('dev'));
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
+
 var router = express.Router()
-https.createServer({
-    cert: fs.readFileSync('server-cert.pem'),
-    key: fs.readFileSync('server-key.pem')
-},app).listen(port, function(){
-    console.log("conected")
-})
+
+https
+    .createServer({
+        cert: fs.readFileSync('server-cert.pem'),
+        key: fs.readFileSync('server-key.pem')
+    }, app)
+    .listen(port, function(){
+        console.log("Listen on port", port)
+    })
+
 router.use('/',indexRoutes.router)
 router.use('/users',userRoutes.router)
 router.use('/cases',casesRoutes.router)
 router.use('/auth',authRoutes.router)
 app.use('/' ,router);
+
 /*class Server {
     app: Application;
 

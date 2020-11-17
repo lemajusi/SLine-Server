@@ -11,7 +11,7 @@ export const authService = new class AuthService{
         try {
             let user: UserDto = req.body;
 
-            const response = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'MM-DD-YYYY') as fecha_registro, to_char(u.fecha_nacimiento, 'MM-DD-YYYY') as fecha_nacimiento, u.id, u.rol 
+            const response = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'YYYY-MM-DD') as fecha_registro, to_char(u.fecha_nacimiento, 'YYYY-MM-DD') as fecha_nacimiento, u.id, u.rol 
                                             FROM _user u
                                             WHERE email='${user.email}'`);
             
@@ -51,7 +51,7 @@ export const authService = new class AuthService{
             res.send({
                 status: res.statusCode,
                 statusText: res.statusMessage,
-                message: error
+                message: JSON.stringify(error)
             });
         }
     }
@@ -67,7 +67,7 @@ export const authService = new class AuthService{
             let response = await pool.query(`INSERT INTO _user (username, email, password, sexo, fecha_nacimiento) VALUES ('${user.username}', '${user.email}', '${user.password}', '${user.sexo}', '${user.fecha_nacimiento}')`);
            
             if(response.rowCount){
-                response = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'MM-DD-YYYY') as fecha_registro, to_char(u.fecha_nacimiento, 'MM-DD-YYYY') as fecha_nacimiento, u.id, u.rol 
+                response = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'YYYY-MM-DD') as fecha_registro, to_char(u.fecha_nacimiento, 'YYYY-MM-DD') as fecha_nacimiento, u.id, u.rol 
                                                 FROM _user u
                                                 WHERE email='${user.email}'`);
 
@@ -104,7 +104,7 @@ export const authService = new class AuthService{
             res.send({
                 status: res.statusCode,
                 statusText: res.statusMessage,
-                message: err || error
+                message: JSON.stringify(error || err)
             })
         }
     }
@@ -131,7 +131,7 @@ export const authService = new class AuthService{
                 });
             }
 
-            req.body.userId = payload.sub;
+            req.body.id = payload.sub;
 
             next();
         } catch (error) {

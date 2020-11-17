@@ -16,7 +16,7 @@ export const userController = new class UserController {
 
             cloudinary.uploader.upload(data.image)
                 .then(async (image) => {
-                    const response = await pool.query(`INSERT INTO userProfileImage(title, cloudinary_id, image_url, user_id) VALUES ('${data.title}', '${image.public_id}', '${image.secure_url}', ${req.body.userId}) RETURNING *`);
+                    const response = await pool.query(`INSERT INTO userProfileImage(title, cloudinary_id, image_url, user_id) VALUES ('${data.title}', '${image.public_id}', '${image.secure_url}', ${req.body.id}) RETURNING *`);
                 
                     let result = response.rows[0];
 
@@ -43,11 +43,11 @@ export const userController = new class UserController {
     }
 
     public async getUsers(req: Request, res: Response) {
-        const userId = req.body.userId;
+        const id = req.body.id;
         try {
-            let response = await pool.query(`SELECT id FROM _user WHERE id=${userId}`);
+            let response = await pool.query(`SELECT id FROM _user WHERE id=${id}`);
 
-            if(response.rowCount === 1 && response.rows[0].id === userId){
+            if(response.rowCount === 1 && response.rows[0].id === id){
                 response = await pool.query('SELECT username, email, fechanac, fecharegistro, sexo FROM _user');
 
                 if(response.rows.length){
@@ -69,13 +69,13 @@ export const userController = new class UserController {
 
     public async getUserById(req: Request, res: Response) {
         try {
-            let userId = +req.body.userId;
-            const response = await pool.query(`SELECT username, email, to_char(fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, sexo FROM _user WHERE id = ${userId}`)
+            let id = +req.body.id;
+            const response = await pool.query(`SELECT username, email, to_char(fecha_nacimiento, 'DD/MM/YYYY') as fecha_nacimiento, sexo FROM _user WHERE id = ${id}`)
             
             let user: UserDto = response.rows[0];
             
             if(response.rowCount !== 0){
-                const image_url = await pool.query(`SELECT image_url FROM userProfileImage WHERE user_id = ${userId}`);
+                const image_url = await pool.query(`SELECT image_url FROM userProfileImage WHERE user_id = ${id}`);
 
                 if(image_url.rows[0]){
                     user.image_url = image_url.rows[0]; 
@@ -99,20 +99,18 @@ export const userController = new class UserController {
     public async updateUser(req: Request, res: Response){
         try {
             let user: UserDto = req.body;
-            user.id = req.body.userId;
-
+            
             let response = await pool.query(`UPDATE _user SET username = '${user.username}', email = '${user.email}', sexo = '${user.sexo}', fecha_nacimiento = '${user.fecha_nacimiento}' WHERE id = ${user.id}`);
-            user  = response.rows[0];
-
-            response  = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'MM-DD-YYYY') as fecha_registro, to_char(u.fecha_nacimiento, 'MM-DD-YYYY') as fecha_nacimiento, u.id, u.rol 
+            
+            response  = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'YYYY-MM-DD') as fecha_registro, to_char(u.fecha_nacimiento, 'YYYY-MM-DD') as fecha_nacimiento, u.id, u.rol 
                                             FROM _user u
                                             WHERE email='${user.email}'`);
             
-            const image_url = await pool.query(`SELECT i.image_url FROM userProfileImage i INNER JOIN _user u
-                                                        ON i.user_id = ${response.rows[0].id}`);
+            const image_url = await pool.query(`SELECT i.image_url FROM userProfileImage i INNER JOIN _user u ON i.user_id = ${user.id}`);
             
             if(response.rows[0]){
                 user = response.rows[0];
+                console.log(user)
                 user.image_url = image_url.rows[0];
                 
                 let payload = { 
@@ -129,13 +127,15 @@ export const userController = new class UserController {
                 let token = await jwtService.createToken(payload).then(result => result);
             
                 res.send({
-                status: 200,
+                status: res.statusCode,
                 statusMessage: 'Ok',
-                message: 'Usuario creado exitosamente',
+                message: 'Usuario actualizado exitosamente',
                 token: token
                 })
             } else throw 'Error al actualizar datos';
+
         } catch (error) {
+
             console.log(error);
             res.send({
                 "status": res.statusCode,

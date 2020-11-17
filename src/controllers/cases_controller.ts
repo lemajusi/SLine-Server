@@ -8,7 +8,7 @@ export const casesController = new class CasesController{
     public async addCase(req:Request, res:Response){
         try {
             let caseData: CaseDto = req.body;
-            caseData.id_usuario = req.body.userId;
+            caseData.id_usuario = req.body.id;
 
             const response = await pool.query(`INSERT INTO _case(lat, lng, descripcion, tipo_violencia, id_usuario) values (${caseData.lat}, ${caseData.lng},'${caseData.descripcion}', '${caseData.tipo_violencia}', ${caseData.id_usuario});`);
             
@@ -31,7 +31,7 @@ export const casesController = new class CasesController{
 
     public async getCases(req:Request, res:Response){
         try {
-            const userId = req.body.userId;
+            const id = req.body.id;
             let response = await pool.query(`SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.lat, c.lng, c.tipo_violencia, c.id_usuario, u.username FROM _case c INNER JOIN _user u ON u.id = c.id_usuario`)
 
             if(response.rows){
@@ -51,14 +51,14 @@ export const casesController = new class CasesController{
         }
     }
 
-    public async getCaseById(req:Request, res:Response){
+    public async getCaseById(req: Request, res: Response){
         try {
-            let userId = +req.body.userId;
-            let caseId = +req.params.dato;
+            let id = req.body.id;
+            let caseId = req.params.dato;
             let response = await pool.query(`
                 SELECT c.id_caso, c.descripcion, to_char(c.fecha_registro, 'DD/MM/YYYY') as fecha_registro, c.verificado, c.tipo_violencia, c.id_usuario, c.lat, c.lng, u.username FROM _case c 
                 INNER JOIN _user u
-                ON u.id=${userId}
+                ON u.id=${id}
                 WHERE c.id_caso = ${caseId}`);
             
             if(response.rows[0]){
@@ -80,23 +80,20 @@ export const casesController = new class CasesController{
         }
     }
 
-    public async getCasoByUserId(req:Request, res:Response){
+    public async getCasoByUserId(req: Request, res: Response){
         try {
-            let userId = +req.body.userId;
-            let response = await pool.query(`SELECT id_caso, descripcion, to_char(fecha_registro, 'DD/MM/YYYY') as fecha_registro, verificado, lat, lng, tipo_violencia, id_usuario FROM _case WHERE id_usuario=${userId}`);
-            
-            if(response.rows.length) {
-                res.send({
-                    status: res.statusCode,
-                    message: res.statusMessage,
-                    data: response.rows
-                })
-            } else throw 'Ninguna fila afectada';
-        
-        } catch (error) {
+            let id = req.body.id;
+            let response = await pool.query(`SELECT id_caso, descripcion, to_char(fecha_registro, 'YYYY/MM/DD') as fecha_registro, verificado, lat, lng, tipo_violencia, id_usuario FROM _case WHERE id_usuario=${id}`);
+      
             res.send({
                 status: res.statusCode,
-                statusText: res.statusMessage,
+                data: response.rows
+            })
+            
+        } catch (error) {
+            console.log(error)
+            res.send({
+                status: res.statusCode,
                 message: error
             })
         }
