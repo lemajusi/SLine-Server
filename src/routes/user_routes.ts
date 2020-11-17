@@ -18,13 +18,16 @@ export const userRoutes = new class UserRoutes {
         //Search by id
         this.router.get('/id', authService.checkAuthenticated, userController.getUserById);
      
-        //Search by id
+        //Profile image
         this.router.post('/profileImage', authService.checkAuthenticated, userController.setProfileImage);
 
-        //Delete
+        //Delete user
         this.router.delete('/dlt', authService.checkAuthenticated, userController.deleteUser);
      
-        //Update
+        //Update user info
         this.router.put('/update', authService.checkAuthenticated, userController.updateUser);
+
+        // Change password
+        this.router.put('/changePassword', authService.checkAuthenticated, userController.changePassword);
     }
 }

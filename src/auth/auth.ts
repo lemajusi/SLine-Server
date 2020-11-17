@@ -13,7 +13,7 @@ export const authService = new class AuthService{
 
             const response = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'YYYY-MM-DD') as fecha_registro, to_char(u.fecha_nacimiento, 'YYYY-MM-DD') as fecha_nacimiento, u.id, u.rol 
                                             FROM _user u
-                                            WHERE email='${user.email}'`);
+                                            WHERE email='${user.email}' AND rol='user      '`);
             
             if(response.rowCount !== 0){
                 const image_url = await pool.query(`SELECT i.image_url FROM userProfileImage i INNER JOIN _user u
@@ -69,7 +69,8 @@ export const authService = new class AuthService{
             if(response.rowCount){
                 response = await pool.query(`SELECT u.username, u.email, u.sexo, to_char(u.fecha_registro, 'YYYY-MM-DD') as fecha_registro, to_char(u.fecha_nacimiento, 'YYYY-MM-DD') as fecha_nacimiento, u.id, u.rol 
                                                 FROM _user u
-                                                WHERE email='${user.email}'`);
+                                                WHERE email='${user.email}' AND rol='user      '`);
+                
 
                 const image_url = await pool.query(`SELECT i.image_url FROM userProfileImage i INNER JOIN _user u
                                                         ON i.user_id = ${response.rows[0].id}`);
@@ -100,6 +101,7 @@ export const authService = new class AuthService{
             } else throw Error();
         
         } catch (error) {
+            console.log(error)
             let err: string = authHandler.errorsChecker(error);
             res.send({
                 status: res.statusCode,

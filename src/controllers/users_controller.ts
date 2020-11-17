@@ -3,6 +3,7 @@ import { pool } from '../database';
 import { v2 as cloudinary } from 'cloudinary';
 import { UserDto } from '../models/user';
 import { jwtService } from '../services/jwt';
+import { hashingService } from '../services/hashing';
 
 export const userController = new class UserController {
 
@@ -145,7 +146,7 @@ export const userController = new class UserController {
         }
     }
 
-    public async deleteUser(req:Request, res:Response){
+    public async deleteUser(req: Request, res: Response){
         const result = await pool.query("select * from usuario where username = '" + req.params.dato +"'")
         const a = result.rows
         console.log(result.rows)
@@ -168,6 +169,34 @@ export const userController = new class UserController {
                     statusText: err
                 })
             }
+        }
+    }
+
+    public async changePassword(req: Request, res: Response){
+        try {
+            const data = req.body;
+            let response = await pool.query(`SELECT password FROM _user WHERE id = ${data.id}`)
+            
+            data.currentPassword = await hashingService.hashPassword(data.currentPassword);
+            const match = hashingService.comparePasswords(data.currentPassword, response.rows[0]);
+
+            if(match){
+                data.newPassword = await hashingService.hashPassword(data.newPassword);
+                response = await pool.query(`UPDATE _user SET password = ${data.newPassword} WHERE id = ${data.id}`)
+
+                res.send({
+                    "status": res.statusCode,
+                    "message": "Password has been updated"
+                })
+            }
+
+        } catch (error) {
+            console.log(error)
+
+            res.send({
+                "status": res.statusCode,
+                "message": JSON.stringify(error)
+            })
         }
     }
 };
